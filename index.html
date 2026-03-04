@@ -2,301 +2,669 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Narrative OS">
+<meta name="theme-color" content="#000000">
 <title>Deep Narrative OS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 :root {
-  --ink:#1a1612;--paper:#f5f0e8;--paper2:#ede7d9;--paper3:#e0d8c8;
-  --accent:#8b3a2a;--accent2:#4a6741;--muted:#8a7f6e;--border:#c8bfaa;
-  --success:#2d5a27;--error:#7a1f1f;--warning:#7a5a1f;
+  --bg: #000;
+  --surface: rgba(255,255,255,0.07);
+  --surface-hover: rgba(255,255,255,0.11);
+  --surface-active: rgba(255,255,255,0.15);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.18);
+  --text: #ffffff;
+  --text-secondary: rgba(255,255,255,0.55);
+  --text-tertiary: rgba(255,255,255,0.30);
+  --accent: #0A84FF;
+  --accent-green: #30D158;
+  --accent-orange: #FF9F0A;
+  --accent-red: #FF453A;
+  --glass: rgba(28,28,30,0.85);
+  --glass-light: rgba(44,44,46,0.90);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;min-height:100vh;position:relative;}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.6;}
-body::after{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(139,58,42,0.06) 27px,rgba(139,58,42,0.06) 28px);pointer-events:none;z-index:0;}
-.container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:48px 32px;}
-#lock-screen{position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;align-items:center;justify-content:center;}
-#lock-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,58,42,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,58,42,0.04) 1px,transparent 1px);background-size:32px 32px;}
-.lock-box{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:28px;width:100%;max-width:340px;padding:0 24px;}
-.lock-icon{font-size:36px;animation:lp 3s ease-in-out infinite;}
-@keyframes lp{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
-.lock-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--paper);letter-spacing:0.04em;text-align:center;line-height:1.2;}
-.lock-title em{font-style:italic;color:var(--accent);}
-.lock-sub{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-align:center;}
-#lock-password{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:2px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--paper);letter-spacing:0.15em;text-align:center;transition:border-color 0.2s;}
-#lock-password:focus{outline:none;border-color:rgba(139,58,42,0.7);}
-#lock-password::placeholder{color:rgba(255,255,255,0.2);font-size:12px;letter-spacing:0.05em;}
-#lock-password.err{border-color:rgba(208,96,96,0.8);animation:shake 0.4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-.lock-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--paper);cursor:pointer;transition:opacity 0.2s;}
-.lock-btn:hover{opacity:0.85;}
-.lock-err{font-size:10px;color:#d06060;letter-spacing:0.05em;text-align:center;min-height:16px;}
-.lock-footer{font-size:8px;letter-spacing:0.1em;color:rgba(255,255,255,0.12);text-align:center;text-transform:uppercase;margin-top:4px;}
-header{margin-bottom:48px;padding-bottom:24px;border-bottom:2px solid var(--ink);position:relative;}
-header::after{content:'';position:absolute;bottom:-5px;left:0;right:0;height:1px;background:var(--border);}
-.header-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:300;line-height:1.1;letter-spacing:-0.02em;}
-h1 em{font-style:italic;color:var(--accent);}
-.header-sub{margin-top:10px;font-size:10px;color:var(--muted);letter-spacing:0.05em;line-height:1.6;}
-.config-section{background:var(--paper2);border:1px solid var(--border);border-radius:2px;padding:20px 24px;margin-bottom:32px;position:relative;}
-.config-section::before{content:'CONFIGURAZIONE DATABASE';position:absolute;top:-8px;left:16px;background:var(--paper2);padding:0 8px;font-size:8px;letter-spacing:0.2em;color:var(--muted);}
-.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.field-group{display:flex;flex-direction:column;gap:5px;}
-.field-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
-.field-hint{font-size:8px;color:var(--muted);opacity:0.7;margin-top:3px;}
-input[type="text"]{background:var(--paper);border:1px solid var(--border);border-radius:2px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink);width:100%;transition:border-color 0.2s;}
-input[type="text"]:focus{outline:none;border-color:var(--accent);}
-input::placeholder{color:var(--muted);opacity:0.6;}
-.mode-selector{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
-.mode-btn{flex:1;min-width:80px;padding:10px 8px;background:var(--paper2);border:1px solid var(--border);border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;}
-.mode-btn:hover{background:var(--paper3);color:var(--ink);}
-.mode-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-.mode-btn .mi{display:block;font-size:14px;margin-bottom:3px;}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:10px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.section-desc{font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
-textarea{width:100%;min-height:180px;background:var(--paper);border:1px solid var(--border);border-radius:2px;padding:16px;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--ink);line-height:1.7;resize:vertical;transition:border-color 0.2s;}
-textarea:focus{outline:none;border-color:var(--accent);}
-textarea::placeholder{color:var(--muted);opacity:0.5;font-style:italic;}
-/* Source mode extra field */
-.source-char-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:12px;}
-.source-char-row .field-group{flex:1;}
-.action-btn{width:100%;padding:16px 32px;background:var(--ink);color:var(--paper);border:none;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;margin-top:16px;}
-.action-btn:hover{background:var(--accent);}
-.action-btn:disabled{opacity:0.5;cursor:not-allowed;}
-.action-btn .btn-loading{display:none;position:absolute;inset:0;background:var(--ink);align-items:center;justify-content:center;gap:8px;}
-.action-btn.loading .btn-loading{display:flex;}
-.action-btn.loading .btn-text{opacity:0;}
-.dot-loader{display:flex;gap:4px;}
-.dot-loader span{width:4px;height:4px;background:var(--paper);border-radius:50%;animation:dp 1.2s ease-in-out infinite;}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+html { background: var(--bg); }
+
+body {
+  background: #000;
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(10,132,255,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(48,209,88,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,159,10,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LOCK SCREEN ── */
+#lock-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: #000;
+  padding: calc(var(--safe-top) + 20px) 24px calc(var(--safe-bottom) + 20px);
+}
+
+#lock-screen::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(10,132,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.lock-box {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 32px;
+  width: 100%; max-width: 320px;
+}
+
+.lock-icon-wrap {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: linear-gradient(135deg, rgba(10,132,255,0.3), rgba(10,132,255,0.1));
+  border: 1px solid rgba(10,132,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 40px rgba(10,132,255,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.lock-title {
+  font-size: 28px; font-weight: 600; letter-spacing: -0.5px;
+  color: var(--text); text-align: center; line-height: 1.2;
+}
+.lock-title span { color: var(--accent); }
+.lock-sub { font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: -20px; }
+
+.lock-input-wrap { width: 100%; position: relative; }
+
+#lock-password {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  font-family: inherit; font-size: 17px; font-weight: 400;
+  color: var(--text); letter-spacing: 0.1em; text-align: center;
+  backdrop-filter: blur(20px);
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+}
+#lock-password:focus { border-color: var(--accent); background: rgba(10,132,255,0.06); }
+#lock-password::placeholder { color: var(--text-tertiary); letter-spacing: 0; font-size: 15px; }
+#lock-password.err { border-color: var(--accent-red); animation: shake 0.4s ease; }
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+}
+
+.lock-btn {
+  width: 100%; padding: 16px;
+  background: var(--accent);
+  border: none; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 17px; font-weight: 600;
+  color: #fff; cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  -webkit-appearance: none;
+}
+.lock-btn:active { opacity: 0.8; transform: scale(0.98); }
+.lock-err { font-size: 13px; color: var(--accent-red); text-align: center; min-height: 18px; }
+.lock-footer { font-size: 11px; color: var(--text-tertiary); text-align: center; }
+
+/* ── MAIN LAYOUT ── */
+.app {
+  position: relative; z-index: 1;
+  max-width: 680px; margin: 0 auto;
+  padding: calc(var(--safe-top) + 20px) 16px calc(var(--safe-bottom) + 100px);
+  min-height: 100dvh;
+}
+
+/* ── HEADER ── */
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 4px 24px;
+}
+.app-header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
+.app-header-title span { color: var(--accent); }
+.app-header-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+.header-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; backdrop-filter: blur(20px);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.header-btn:active { background: var(--surface-active); }
+
+/* ── CONFIG PANEL (collapsible) ── */
+.config-panel {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+.config-panel.collapsed { display: none; }
+.config-inner { padding: 16px; }
+.config-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px;
+}
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.config-field { display: flex; flex-direction: column; gap: 4px; }
+.config-field label { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+.config-input {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 8px 10px;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; color: var(--text);
+  width: 100%; outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.config-input:focus { border-color: var(--accent); }
+.config-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 10px; text-align: center; }
+
+/* ── TAB BAR ── */
+.tab-bar {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  padding: 6px;
+  display: flex; gap: 4px;
+  margin-bottom: 20px;
+}
+.tab-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 8px 4px;
+  border: none; background: transparent;
+  border-radius: var(--radius-xs);
+  font-family: inherit; font-size: 10px; font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer; transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.tab-btn .tab-icon { font-size: 20px; line-height: 1; }
+.tab-btn:active { background: var(--surface-active); }
+.tab-btn.active {
+  background: var(--surface-active);
+  color: var(--accent);
+}
+.tab-btn.active .tab-icon { filter: drop-shadow(0 0 6px rgba(10,132,255,0.5)); }
+
+/* ── PANELS ── */
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+
+/* ── CARD ── */
+.card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.card-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+.card-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; line-height: 1.4; }
+.card-body { padding: 14px 16px; }
+
+/* ── SOURCE CHAR ROW ── */
+.source-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.source-row .config-field { flex: 1; }
+
+/* ── TEXTAREA ── */
+.narrative-input {
+  width: 100%;
+  background: transparent;
+  border: none; outline: none; resize: none;
+  font-family: inherit; font-size: 15px; font-weight: 300;
+  color: var(--text); line-height: 1.6;
+  min-height: 160px;
+  -webkit-appearance: none;
+}
+.narrative-input::placeholder { color: var(--text-tertiary); }
+
+/* ── PRIMARY BUTTON ── */
+.primary-btn {
+  width: 100%; padding: 16px;
+  background: var(--accent);
+  border: none; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.15s, transform 0.1s;
+  position: relative; overflow: hidden;
+  -webkit-appearance: none;
+  margin-top: 4px;
+}
+.primary-btn:active { opacity: 0.8; transform: scale(0.99); }
+.primary-btn:disabled { opacity: 0.4; }
+.primary-btn .btn-loading { display: none; }
+.primary-btn.loading .btn-text { display: none; }
+.primary-btn.loading .btn-loading { display: flex; align-items: center; gap: 8px; }
+.dot-loader { display: flex; gap: 4px; }
+.dot-loader span {
+  width: 5px; height: 5px; background: #fff; border-radius: 50%;
+  animation: dp 1.2s ease-in-out infinite;
+}
 .dot-loader span:nth-child(2){animation-delay:0.2s;}
 .dot-loader span:nth-child(3){animation-delay:0.4s;}
-@keyframes dp{0%,80%,100%{opacity:0.2;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
-/* Contradiction banner */
-.contradiction-banner{display:none;margin-top:20px;background:rgba(122,90,31,0.1);border:1px solid rgba(122,90,31,0.35);border-radius:2px;padding:16px 20px;}
-.contradiction-banner.visible{display:block;}
-.contradiction-banner h3{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--warning);margin-bottom:10px;}
-.contradiction-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.contradiction-item{font-size:10px;line-height:1.6;color:var(--ink);padding-left:12px;border-left:2px solid rgba(122,90,31,0.4);}
-.contradiction-item strong{color:var(--warning);}
-.contradiction-actions{display:flex;gap:10px;margin-top:14px;}
-.c-btn{flex:1;padding:10px;background:var(--paper);border:1px solid var(--border);border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;text-align:center;}
-.c-btn:hover{background:var(--paper3);}
-.c-btn.proceed{background:var(--accent2);color:var(--paper);border-color:var(--accent2);}
-/* Source synthesis panel */
-.synthesis-panel{display:none;margin-top:20px;background:var(--paper2);border:1px solid var(--border);border-radius:2px;padding:20px;}
-.synthesis-panel.visible{display:block;}
-.synthesis-panel h3{font-family:'Cormorant Garamond',serif;font-size:16px;margin-bottom:10px;}
-.synthesis-text{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;line-height:1.8;color:var(--ink);white-space:pre-wrap;}
-.synthesis-actions{display:flex;gap:10px;margin-top:16px;}
-.results-panel{display:none;margin-top:40px;animation:fadeUp 0.4s ease;}
-.results-panel.visible{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.extracted-grid{display:grid;gap:16px;margin-top:20px;}
-.data-card{background:var(--paper2);border:1px solid var(--border);border-radius:2px;overflow:hidden;}
-.data-card-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--paper3);border-bottom:1px solid var(--border);}
-.data-card-title{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px;}
-.data-card-badge{font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;border:1px solid currentColor;}
-.badge-character{color:var(--accent);}.badge-trait{color:var(--accent2);}.badge-arc{color:var(--warning);}
-.data-card-body{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.data-field{display:flex;flex-direction:column;gap:3px;}
-.data-field.full{grid-column:1/-1;}
-.data-field-key{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
-.data-field-value{font-size:11px;color:var(--ink);line-height:1.5;}
-.data-field-value.long{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;line-height:1.6;}
-.data-field-value[contenteditable="true"]{border-bottom:1px dashed var(--border);padding-bottom:2px;outline:none;min-width:20px;}
-.data-field-value[contenteditable="true"]:focus{border-bottom-color:var(--accent);}
-.notion-actions{margin-top:24px;display:flex;gap:12px;}
-.notion-btn{flex:1;padding:14px;background:var(--paper2);border:1px solid var(--border);border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ink);cursor:pointer;transition:all 0.2s;text-align:center;}
-.notion-btn:hover{background:var(--paper3);}
-.notion-btn.primary{background:var(--accent2);color:var(--paper);border-color:var(--accent2);}
-.notion-btn.primary:hover{opacity:0.9;}
-.notion-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.log-terminal{margin-top:24px;background:var(--ink);border-radius:2px;padding:16px;display:none;max-height:200px;overflow-y:auto;}
-.log-terminal.visible{display:block;}
-.log-line{font-size:10px;line-height:1.8;display:flex;gap:10px;}
-.log-ts{color:#8a7f6e;flex-shrink:0;}
-.log-ok{color:#6db56d;}.log-err{color:#d06060;}.log-info{color:#6090d0;}.log-warn{color:#d0a060;}
-.divider{height:1px;background:var(--border);margin:32px 0;position:relative;}
-.divider::after{content:'§';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--paper);padding:0 12px;color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:14px;}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--paper2);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.mode-panel{display:none;}
-.mode-panel.active{display:block;}
+@keyframes dp{0%,80%,100%{opacity:0.3;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+
+/* ── CONTRADICTION BANNER ── */
+.contradiction-banner {
+  display: none;
+  background: rgba(255,159,10,0.08);
+  border: 1px solid rgba(255,159,10,0.25);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 12px;
+  backdrop-filter: blur(20px);
+}
+.contradiction-banner.visible { display: block; }
+.contradiction-banner h3 {
+  font-size: 13px; font-weight: 600;
+  color: var(--accent-orange); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.contradiction-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.contradiction-item {
+  font-size: 13px; line-height: 1.5; color: var(--text-secondary);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-xs);
+  border-left: 2px solid var(--accent-orange);
+}
+.contradiction-item strong { color: var(--text); display: block; margin-bottom: 4px; }
+.contradiction-actions { display: flex; gap: 8px; margin-top: 14px; }
+.c-btn {
+  flex: 1; padding: 12px;
+  background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); font-family: inherit; font-size: 13px; font-weight: 500;
+  color: var(--text); cursor: pointer; text-align: center; transition: background 0.15s;
+  -webkit-appearance: none;
+}
+.c-btn:active { background: var(--surface-active); }
+.c-btn.proceed { background: rgba(48,209,88,0.15); border-color: rgba(48,209,88,0.3); color: var(--accent-green); }
+
+/* ── SYNTHESIS PANEL ── */
+.synthesis-panel {
+  display: none;
+  background: var(--glass-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 12px;
+}
+.synthesis-panel.visible { display: block; }
+.synthesis-panel h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.synthesis-panel p { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+.synthesis-text {
+  font-size: 15px; line-height: 1.7; color: var(--text);
+  white-space: pre-wrap; outline: none;
+  border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;
+}
+.synthesis-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.s-btn {
+  padding: 10px 14px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-xs);
+  font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text);
+  cursor: pointer; transition: background 0.15s; -webkit-appearance: none;
+}
+.s-btn:active { background: var(--surface-active); }
+.s-btn.destructive { color: var(--accent-red); }
+
+/* ── RESULTS ── */
+.results-panel { display: none; margin-top: 8px; animation: fadeUp 0.35s ease; }
+.results-panel.visible { display: block; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.results-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; }
+
+/* Data cards */
+.data-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(40px);
+  overflow: hidden; margin-bottom: 10px;
+}
+.data-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.data-card-title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.data-card-badge {
+  font-size: 10px; font-weight: 600; padding: 3px 8px;
+  border-radius: 20px; letter-spacing: 0.04em;
+}
+.badge-character { background: rgba(10,132,255,0.15); color: var(--accent); }
+.badge-trait { background: rgba(48,209,88,0.15); color: var(--accent-green); }
+.badge-arc { background: rgba(255,159,10,0.15); color: var(--accent-orange); }
+.data-card-body { padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.data-field { display: flex; flex-direction: column; gap: 4px; }
+.data-field.full { grid-column: 1/-1; }
+.data-field-key { font-size: 11px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.04em; text-transform: uppercase; }
+.data-field-value { font-size: 14px; color: var(--text); line-height: 1.5; }
+.data-field-value.long { font-size: 15px; line-height: 1.6; font-weight: 300; }
+.data-field-value[contenteditable="true"] { border-bottom: 1px solid var(--border); padding-bottom: 3px; outline: none; }
+.data-field-value[contenteditable="true"]:focus { border-bottom-color: var(--accent); }
+
+/* ── NOTION ACTIONS ── */
+.notion-actions { display: flex; gap: 10px; margin-top: 16px; margin-bottom: 8px; }
+.secondary-btn {
+  flex: 1; padding: 14px;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-family: inherit;
+  font-size: 15px; font-weight: 500; color: var(--text);
+  cursor: pointer; text-align: center; transition: background 0.15s;
+  backdrop-filter: blur(20px); -webkit-appearance: none;
+}
+.secondary-btn:active { background: var(--surface-active); }
+.secondary-btn.green { background: rgba(48,209,88,0.15); border-color: rgba(48,209,88,0.3); color: var(--accent-green); font-weight: 600; }
+.secondary-btn:disabled { opacity: 0.4; }
+
+/* ── LOG TERMINAL ── */
+.log-terminal {
+  display: none;
+  background: rgba(0,0,0,0.6); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 12px 14px;
+  max-height: 180px; overflow-y: auto;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  margin-top: 12px;
+}
+.log-terminal.visible { display: block; }
+.log-line { font-size: 11px; line-height: 1.8; display: flex; gap: 10px; }
+.log-ts { color: #555; flex-shrink: 0; }
+.log-ok { color: #30D158; } .log-err { color: #FF453A; }
+.log-info { color: #0A84FF; } .log-warn { color: #FF9F0A; }
+
+/* ── FIXED BOTTOM NAV (mobile) ── */
+@media (max-width: 600px) {
+  .app { padding-bottom: calc(var(--safe-bottom) + 90px); }
+  .floating-actions {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px calc(var(--safe-bottom) + 12px);
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+/* ── DIVIDER ── */
+.sep { height: 1px; background: var(--border); margin: 16px 0; }
 </style>
 </head>
 <body>
 
+<!-- LOCK -->
 <div id="lock-screen">
   <div class="lock-box">
-    <div class="lock-icon">🜏</div>
-    <div>
-      <div class="lock-title">Deep Narrative <em>OS</em></div>
+    <div class="lock-icon-wrap">⬡</div>
+    <div style="text-align:center;">
+      <div class="lock-title">Deep Narrative <span>OS</span></div>
       <div class="lock-sub" style="margin-top:6px;">Accesso protetto</div>
     </div>
-    <input type="password" id="lock-password" placeholder="inserisci la password"
-           autocomplete="off" onkeydown="if(event.key==='Enter')unlock()" />
-    <button class="lock-btn" onclick="unlock()">Sblocca →</button>
+    <div class="lock-input-wrap">
+      <input type="password" id="lock-password" placeholder="Password"
+             autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')unlock()" />
+    </div>
+    <button class="lock-btn" onclick="unlock()">Accedi</button>
     <div class="lock-err" id="lock-error"></div>
-    <div class="lock-footer">Le credenziali non lasciano mai il server</div>
+    <div class="lock-footer">Credenziali cifrate · Non lasciano mai il server</div>
   </div>
 </div>
 
-<div class="container">
-  <header>
-    <div class="header-label">Deep Narrative OS · Strumento di Importazione</div>
-    <h1>Narrativa <em>→</em> Notion</h1>
-    <p class="header-sub">Scrivi liberamente. La AI estrae i dati, verifica le contraddizioni, e scrive su Notion.</p>
-  </header>
+<!-- APP -->
+<div class="app">
 
-  <div class="config-section">
-    <div class="config-grid">
-      <div class="field-group"><label class="field-label">Characters DB ID</label><input type="text" id="db-characters" value="314ddcfee7cd80c8af01de99f43dbf57" /></div>
-      <div class="field-group"><label class="field-label">Traits DB ID</label><input type="text" id="db-traits" value="314ddcfee7cd8027b95bdfbf4fd215ce" /></div>
-      <div class="field-group"><label class="field-label">Arcs DB ID</label><input type="text" id="db-arcs" value="314ddcfee7cd80afac04f5478dd660b5" /></div>
-      <div class="field-group"><label class="field-label">Timeline DB ID</label><input type="text" id="db-timeline" value="314ddcfee7cd80a0882bf5c32e3eed35" /></div>
-      <div class="field-group"><label class="field-label">Locations DB ID</label><input type="text" id="db-locations" value="314ddcfee7cd80438975d8406e750e15" /></div>
-      <div class="field-group"><label class="field-label">Objects DB ID</label><input type="text" id="db-objects" value="315ddcfee7cd8073845fd786f702df30" /></div>
+  <!-- HEADER -->
+  <div class="app-header">
+    <div>
+      <div class="app-header-title">Narrative <span>OS</span></div>
+      <div class="app-header-sub">Narrativa → Notion</div>
     </div>
-    <p class="field-hint" style="margin-top:12px;">API keys nelle environment variables Netlify — non appaiono mai qui.</p>
+    <button class="header-btn" onclick="toggleConfig()" title="Configurazione">⚙️</button>
   </div>
 
-  <div class="mode-selector">
-    <button class="mode-btn active" onclick="setMode('character')" id="btn-character"><span class="mi">👤</span>PERSONAGGIO</button>
-    <button class="mode-btn" onclick="setMode('event')" id="btn-event"><span class="mi">📅</span>EVENTO</button>
-    <button class="mode-btn" onclick="setMode('location')" id="btn-location"><span class="mi">🏚️</span>LUOGO</button>
-    <button class="mode-btn" onclick="setMode('object')" id="btn-object"><span class="mi">🔮</span>OGGETTO</button>
-    <button class="mode-btn" onclick="setMode('source')" id="btn-source"><span class="mi">📰</span>FONTE ESTERNA</button>
+  <!-- CONFIG (collapsible) -->
+  <div class="config-panel collapsed" id="config-panel">
+    <div class="config-inner">
+      <div class="config-label">Database IDs</div>
+      <div class="config-grid">
+        <div class="config-field"><label>Characters</label><input class="config-input" type="text" id="db-characters" value="314ddcfee7cd80c8af01de99f43dbf57" /></div>
+        <div class="config-field"><label>Traits</label><input class="config-input" type="text" id="db-traits" value="314ddcfee7cd8027b95bdfbf4fd215ce" /></div>
+        <div class="config-field"><label>Arcs</label><input class="config-input" type="text" id="db-arcs" value="314ddcfee7cd80afac04f5478dd660b5" /></div>
+        <div class="config-field"><label>Timeline</label><input class="config-input" type="text" id="db-timeline" value="314ddcfee7cd80a0882bf5c32e3eed35" /></div>
+        <div class="config-field"><label>Locations</label><input class="config-input" type="text" id="db-locations" value="314ddcfee7cd80438975d8406e750e15" /></div>
+        <div class="config-field"><label>Objects</label><input class="config-input" type="text" id="db-objects" value="315ddcfee7cd8073845fd786f702df30" /></div>
+      </div>
+      <div class="config-hint">API keys nelle env vars Netlify — non appaiono qui</div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="setMode('character')" id="btn-character">
+      <span class="tab-icon">👤</span><span>Personaggio</span>
+    </button>
+    <button class="tab-btn" onclick="setMode('event')" id="btn-event">
+      <span class="tab-icon">📅</span><span>Evento</span>
+    </button>
+    <button class="tab-btn" onclick="setMode('location')" id="btn-location">
+      <span class="tab-icon">🏚️</span><span>Luogo</span>
+    </button>
+    <button class="tab-btn" onclick="setMode('object')" id="btn-object">
+      <span class="tab-icon">🔮</span><span>Oggetto</span>
+    </button>
+    <button class="tab-btn" onclick="setMode('source')" id="btn-source">
+      <span class="tab-icon">📰</span><span>Fonte</span>
+    </button>
   </div>
 
   <!-- CHARACTER -->
   <div class="mode-panel active" id="panel-character">
-    <div class="section-title">Descrizione del Personaggio</div>
-    <p class="section-desc">Scrivi liberamente. Prima di importare lo strumento verifica le contraddizioni con quanto già presente su Notion.</p>
-    <textarea id="text-character" placeholder="Deva Luce è nata in una città che non esiste più sulle mappe. Ha imparato a leggere dalle lettere abbandonate negli androni, e da allora porta sempre con sé una busta sigillata che non ha mai aperto..."></textarea>
-    <button class="action-btn" id="btn-extract-character" onclick="extractAndSend('character')">
-      <span class="btn-text">✦ Analizza e verifica contraddizioni</span>
-      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:10px;letter-spacing:0.1em;">Analisi in corso...</span></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Personaggio</div>
+        <div class="card-subtitle">Scrivi liberamente. Lo strumento verifica le contraddizioni con quanto già in Bible prima di importare.</div>
+      </div>
+      <div class="card-body">
+        <textarea class="narrative-input" id="text-character" placeholder="Deva Luce è nata in una città che non esiste più sulle mappe. Ha imparato a leggere dalle lettere abbandonate negli androni..."></textarea>
+      </div>
+    </div>
+    <button class="primary-btn" id="btn-extract-character" onclick="extractAndSend('character')">
+      <span class="btn-text">Analizza e verifica contraddizioni</span>
+      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:14px;">Analisi in corso...</span></div>
     </button>
-    <!-- Contradiction banner -->
     <div class="contradiction-banner" id="contradiction-character">
       <h3>⚠ Contraddizioni rilevate</h3>
       <ul class="contradiction-list" id="contradiction-list-character"></ul>
       <div class="contradiction-actions">
-        <button class="c-btn" onclick="abortImport('character')">✕ Annulla — rivedi il testo</button>
-        <button class="c-btn proceed" onclick="proceedDespiteContradictions('character')">→ Procedi comunque</button>
+        <button class="c-btn" onclick="abortImport('character')">✕ Annulla</button>
+        <button class="c-btn proceed" onclick="proceedDespiteContradictions('character')">Procedi comunque →</button>
       </div>
     </div>
   </div>
 
   <!-- EVENT -->
   <div class="mode-panel" id="panel-event">
-    <div class="section-title">Descrizione dell'Evento</div>
-    <p class="section-desc">Descrivi la scena narrativa. Lo strumento verifica la coerenza con i personaggi e i luoghi già in Bible.</p>
-    <textarea id="text-event" placeholder="Era la prima volta che Deva vedeva qualcuno fermarsi davanti alla sua porta..."></textarea>
-    <button class="action-btn" id="btn-extract-event" onclick="extractAndSend('event')">
-      <span class="btn-text">✦ Analizza e verifica contraddizioni</span>
-      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:10px;letter-spacing:0.1em;">Analisi in corso...</span></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Evento</div>
+        <div class="card-subtitle">Descrivi la scena. Lo strumento verifica la coerenza con personaggi e luoghi già in Bible.</div>
+      </div>
+      <div class="card-body">
+        <textarea class="narrative-input" id="text-event" placeholder="Era la prima volta che Deva vedeva qualcuno fermarsi davanti alla sua porta..."></textarea>
+      </div>
+    </div>
+    <button class="primary-btn" id="btn-extract-event" onclick="extractAndSend('event')">
+      <span class="btn-text">Analizza e verifica contraddizioni</span>
+      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:14px;">Analisi in corso...</span></div>
     </button>
     <div class="contradiction-banner" id="contradiction-event">
       <h3>⚠ Contraddizioni rilevate</h3>
       <ul class="contradiction-list" id="contradiction-list-event"></ul>
       <div class="contradiction-actions">
-        <button class="c-btn" onclick="abortImport('event')">✕ Annulla — rivedi il testo</button>
-        <button class="c-btn proceed" onclick="proceedDespiteContradictions('event')">→ Procedi comunque</button>
+        <button class="c-btn" onclick="abortImport('event')">✕ Annulla</button>
+        <button class="c-btn proceed" onclick="proceedDespiteContradictions('event')">Procedi comunque →</button>
       </div>
     </div>
   </div>
 
   <!-- LOCATION -->
   <div class="mode-panel" id="panel-location">
-    <div class="section-title">Descrizione del Luogo</div>
-    <p class="section-desc">Descrivi l'atmosfera, la luce, i suoni. Il visual_code estratto servirà come base per i prompt ComfyUI.</p>
-    <textarea id="text-location" placeholder="Il vecchio porto non è mai davvero silenzioso..."></textarea>
-    <button class="action-btn" id="btn-extract-location" onclick="extractAndSend('location')">
-      <span class="btn-text">✦ Analizza e verifica contraddizioni</span>
-      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:10px;letter-spacing:0.1em;">Analisi in corso...</span></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Luogo</div>
+        <div class="card-subtitle">Atmosfera, luce, suoni. Il visual_code estratto alimenterà i prompt ComfyUI.</div>
+      </div>
+      <div class="card-body">
+        <textarea class="narrative-input" id="text-location" placeholder="Il vecchio porto non è mai davvero silenzioso. Le gru di ferro arrugginito riflettono la luce grigia del mattino..."></textarea>
+      </div>
+    </div>
+    <button class="primary-btn" id="btn-extract-location" onclick="extractAndSend('location')">
+      <span class="btn-text">Analizza e verifica contraddizioni</span>
+      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:14px;">Analisi in corso...</span></div>
     </button>
     <div class="contradiction-banner" id="contradiction-location">
       <h3>⚠ Contraddizioni rilevate</h3>
       <ul class="contradiction-list" id="contradiction-list-location"></ul>
       <div class="contradiction-actions">
-        <button class="c-btn" onclick="abortImport('location')">✕ Annulla — rivedi il testo</button>
-        <button class="c-btn proceed" onclick="proceedDespiteContradictions('location')">→ Procedi comunque</button>
+        <button class="c-btn" onclick="abortImport('location')">✕ Annulla</button>
+        <button class="c-btn proceed" onclick="proceedDespiteContradictions('location')">Procedi comunque →</button>
       </div>
     </div>
   </div>
 
   <!-- OBJECT -->
   <div class="mode-panel" id="panel-object">
-    <div class="section-title">Descrizione dell'Oggetto</div>
-    <p class="section-desc">Descrivi l'oggetto narrativo: aspetto, storia, significato simbolico.</p>
-    <textarea id="text-object" placeholder="La lettera è sigillata con cera rossa scurita dal tempo..."></textarea>
-    <button class="action-btn" id="btn-extract-object" onclick="extractAndSend('object')">
-      <span class="btn-text">✦ Analizza e verifica contraddizioni</span>
-      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:10px;letter-spacing:0.1em;">Analisi in corso...</span></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Oggetto</div>
+        <div class="card-subtitle">Aspetto, storia, significato simbolico. Anche gli oggetti hanno un arco narrativo.</div>
+      </div>
+      <div class="card-body">
+        <textarea class="narrative-input" id="text-object" placeholder="La lettera è sigillata con cera rossa scurita dal tempo..."></textarea>
+      </div>
+    </div>
+    <button class="primary-btn" id="btn-extract-object" onclick="extractAndSend('object')">
+      <span class="btn-text">Analizza e verifica contraddizioni</span>
+      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:14px;">Analisi in corso...</span></div>
     </button>
     <div class="contradiction-banner" id="contradiction-object">
       <h3>⚠ Contraddizioni rilevate</h3>
       <ul class="contradiction-list" id="contradiction-list-object"></ul>
       <div class="contradiction-actions">
-        <button class="c-btn" onclick="abortImport('object')">✕ Annulla — rivedi il testo</button>
-        <button class="c-btn proceed" onclick="proceedDespiteContradictions('object')">→ Procedi comunque</button>
+        <button class="c-btn" onclick="abortImport('object')">✕ Annulla</button>
+        <button class="c-btn proceed" onclick="proceedDespiteContradictions('object')">Procedi comunque →</button>
       </div>
     </div>
   </div>
 
   <!-- SOURCE -->
   <div class="mode-panel" id="panel-source">
-    <div class="section-title">Fonte Esterna</div>
-    <p class="section-desc">Incolla un articolo, un brano, una descrizione di luogo reale. Lo strumento filtra e sintetizza solo gli elementi utili alla storia, scartando il resto.</p>
-    <div class="source-char-row">
-      <div class="field-group">
-        <label class="field-label">Personaggio di riferimento (opzionale)</label>
-        <input type="text" id="source-character-name" placeholder="es. Deva Luce — lascia vuoto per worldbuilding generico" />
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Fonte Esterna</div>
+        <div class="card-subtitle">Incolla un articolo o testo di ricerca. La AI filtra solo ciò che è utile alla storia.</div>
       </div>
-      <div class="field-group" style="max-width:200px;">
-        <label class="field-label">Tipo di fonte</label>
-        <input type="text" id="source-type" placeholder="es. articolo, romanzo, racconto" />
+      <div class="card-body">
+        <div class="source-row">
+          <div class="config-field">
+            <label>Personaggio (opzionale)</label>
+            <input class="config-input" type="text" id="source-character-name" placeholder="es. Deva Luce" />
+          </div>
+          <div class="config-field" style="max-width:130px;">
+            <label>Tipo fonte</label>
+            <input class="config-input" type="text" id="source-type" placeholder="articolo, libro..." />
+          </div>
+        </div>
+        <div class="sep"></div>
+        <textarea class="narrative-input" id="text-source" style="min-height:200px;" placeholder="Incolla qui il testo della fonte. Verrà filtrato e sintetizzato narrativamente prima di entrare in Bible..."></textarea>
       </div>
     </div>
-    <textarea id="text-source" style="min-height:240px;" placeholder="Incolla qui il testo della fonte. Può essere lungo — verrà filtrato e sintetizzato narrativamente prima di entrare in Bible..."></textarea>
-    <button class="action-btn" id="btn-extract-source" onclick="analyzeSource()">
-      <span class="btn-text">✦ Filtra e sintetizza per la Bible</span>
-      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:10px;letter-spacing:0.1em;">Filtraggio in corso...</span></div>
+    <button class="primary-btn" id="btn-extract-source" onclick="analyzeSource()">
+      <span class="btn-text">Filtra e sintetizza per la Bible</span>
+      <div class="btn-loading"><div class="dot-loader"><span></span><span></span><span></span></div><span style="font-size:14px;">Filtraggio in corso...</span></div>
     </button>
-    <!-- Synthesis result -->
     <div class="synthesis-panel" id="synthesis-panel">
-      <h3>Sintesi narrativa estratta</h3>
-      <p style="font-size:9px;color:var(--muted);margin-bottom:12px;letter-spacing:0.05em;">Rivedi e modifica prima di usarla come base per un nuovo elemento Bible.</p>
+      <h3>Sintesi narrativa</h3>
+      <p>Rivedi e modifica. Poi scegli come usarla.</p>
       <div class="synthesis-text" id="synthesis-text" contenteditable="true"></div>
       <div class="synthesis-actions">
-        <button class="notion-btn" onclick="resetSource()">✕ Scarta</button>
-        <button class="notion-btn" onclick="useSynthesisAsCharacter()" style="background:var(--paper3);">→ Usa come Personaggio</button>
-        <button class="notion-btn" onclick="useSynthesisAsLocation()" style="background:var(--paper3);">→ Usa come Luogo</button>
-        <button class="notion-btn" onclick="useSynthesisAsEvent()" style="background:var(--paper3);">→ Usa come Evento</button>
+        <button class="s-btn destructive" onclick="resetSource()">Scarta</button>
+        <button class="s-btn" onclick="useSynthesisAsCharacter()">→ Personaggio</button>
+        <button class="s-btn" onclick="useSynthesisAsLocation()">→ Luogo</button>
+        <button class="s-btn" onclick="useSynthesisAsEvent()">→ Evento</button>
       </div>
     </div>
   </div>
 
   <!-- RESULTS -->
   <div class="results-panel" id="results-panel">
-    <div class="divider"></div>
-    <div class="section-title">Dati Estratti</div>
-    <p class="section-desc" style="margin-bottom:4px;">Puoi modificare qualsiasi campo prima di inviarlo.</p>
+    <div class="sep"></div>
+    <div class="results-title">Dati estratti</div>
     <div class="extracted-grid" id="extracted-grid"></div>
     <div class="notion-actions">
-      <button class="notion-btn" onclick="resetTool()">← Ricomincia</button>
-      <button class="notion-btn primary" id="btn-send-notion" onclick="sendToNotion()">Scrivi su Notion →</button>
+      <button class="secondary-btn" onclick="resetTool()">← Ricomincia</button>
+      <button class="secondary-btn green" id="btn-send-notion" onclick="sendToNotion()">Scrivi su Notion</button>
     </div>
     <div class="log-terminal" id="log-terminal"></div>
   </div>
-</div>
+
+</div><!-- /app -->
 
 <script>
 let sessionPassword = null;
+
+function toggleConfig() {
+  const p = document.getElementById("config-panel");
+  p.classList.toggle("collapsed");
+}
 let currentMode = 'character';
 let extractedData = null;
 let pendingExtractedData = null; // holds data while waiting for contradiction decision
@@ -947,5 +1315,7 @@ function resetTool() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
+</body>
+</html>
 </body>
 </html>
