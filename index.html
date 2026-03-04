@@ -881,7 +881,7 @@ async function sendToNotion() {
       addLog('info',`Creazione evento: ${title}...`);
       await createPage(dbIds.timeline, {
         'event_title':     {title:rt(title)},
-        'event_type':      {multi_select:[{name:type}]},
+        'event_type':      {select:{name:type}},
         'emotional_tone':  {select:{name:emo}},
         'narrative_weight':{number:weight},
         'status':          {select:{name:'planned'}},
