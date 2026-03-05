@@ -2,11 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Narrative OS">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#f2f2f7">
 <title>Deep Narrative OS</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -29,104 +29,146 @@
   --radius-xs: 10px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html { background: var(--bg); }
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: var(--bg);
+  /* Prevent scale bounce on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   min-height: 100dvh;
+  min-height: -webkit-fill-available;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-/* ── LOCK ── */
+/* ── LOCK SCREEN ── */
 #lock-screen {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
   display: flex; align-items: center; justify-content: center;
-  padding: calc(var(--safe-top) + 20px) 24px calc(var(--safe-bottom) + 20px);
+  padding: calc(var(--safe-top) + 24px)
+           calc(var(--safe-right) + 24px)
+           calc(var(--safe-bottom) + 24px)
+           calc(var(--safe-left) + 24px);
 }
+
 .lock-box {
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
   width: 100%; max-width: 320px;
 }
+
 .lock-icon-wrap {
-  width: 76px; height: 76px; border-radius: 20px;
+  width: 72px; height: 72px; border-radius: 18px;
   background: var(--accent);
   display: flex; align-items: center; justify-content: center;
-  font-size: 34px;
-  box-shadow: 0 4px 24px rgba(0,122,255,0.28);
+  font-size: 32px;
+  box-shadow: 0 4px 20px rgba(0,122,255,0.30);
+  flex-shrink: 0;
 }
+
 .lock-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; text-align: center; }
 .lock-title span { color: var(--accent); }
-.lock-sub { font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: -18px; }
+.lock-sub { font-size: 13px; color: var(--text-secondary); text-align: center; }
+
 #lock-password {
   width: 100%; background: var(--surface);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm); padding: 15px 18px;
   font-family: inherit; font-size: 17px; color: var(--text);
   text-align: center; letter-spacing: 0.08em; outline: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   transition: border-color 0.2s;
-  -webkit-appearance: none;
+  -webkit-appearance: none; appearance: none;
 }
 #lock-password:focus { border-color: var(--accent); }
 #lock-password::placeholder { color: var(--text-tertiary); letter-spacing: 0; font-size: 15px; }
 #lock-password.err { border-color: var(--accent-red); animation: shake 0.4s ease; }
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+
 .lock-btn {
   width: 100%; padding: 15px; background: var(--accent);
   border: none; border-radius: var(--radius-sm);
   font-family: inherit; font-size: 17px; font-weight: 600;
   color: #fff; cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
-  -webkit-appearance: none;
   box-shadow: 0 2px 12px rgba(0,122,255,0.3);
+  -webkit-appearance: none; appearance: none;
+  transition: opacity 0.15s, transform 0.1s;
 }
-.lock-btn:active { opacity: 0.8; transform: scale(0.98); }
+.lock-btn:active { opacity: 0.82; transform: scale(0.98); }
+
 .lock-err { font-size: 13px; color: var(--accent-red); text-align: center; min-height: 18px; }
 .lock-footer { font-size: 11px; color: var(--text-tertiary); text-align: center; }
 
-/* ── APP ── */
+/* Landscape lock: horizontal layout */
+@media (orientation: landscape) and (max-height: 500px) {
+  .lock-box { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 16px; max-width: 560px; }
+  .lock-icon-wrap { width: 56px; height: 56px; font-size: 26px; }
+  .lock-title { font-size: 22px; }
+  #lock-password, .lock-btn { max-width: 280px; }
+}
+
+/* ── APP SHELL ── */
 .app {
-  max-width: 680px; margin: 0 auto;
-  padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 40px);
+  max-width: 720px; margin: 0 auto;
+  padding-top: calc(var(--safe-top) + 14px);
+  padding-bottom: calc(var(--safe-bottom) + 40px);
+  padding-left: calc(var(--safe-left) + 16px);
+  padding-right: calc(var(--safe-right) + 16px);
 }
 
 /* ── HEADER ── */
 .app-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 4px 20px;
+  padding: 6px 4px 18px;
 }
 .app-header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
 .app-header-title span { color: var(--accent); }
 .app-header-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+
 .header-btn {
   width: 34px; height: 34px; border-radius: 50%;
   background: var(--surface); border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  transition: background 0.15s; flex-shrink: 0;
+  font-size: 15px; cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  transition: background 0.15s;
+  -webkit-appearance: none; appearance: none;
 }
-.header-btn:active { background: var(--surface2); }
+.header-btn:active { background: #e5e5ea; }
 
-/* ── CONFIG (hidden by default, shown as sheet) ── */
+/* ── CONFIG PANEL ── */
 .config-panel {
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  overflow: hidden; margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  overflow: hidden; margin-bottom: 14px;
   display: none;
+  animation: slideDown 0.2s ease;
 }
+@keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 .config-panel.open { display: block; }
 .config-inner { padding: 16px; }
 .config-label {
   font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px;
+  text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;
 }
 .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .config-field { display: flex; flex-direction: column; gap: 4px; }
@@ -136,41 +178,42 @@ body {
   border-radius: var(--radius-xs); padding: 8px 10px;
   font-family: 'SF Mono','Fira Code',monospace; font-size: 10px; color: var(--text);
   width: 100%; outline: none; transition: border-color 0.2s;
-  -webkit-appearance: none;
+  -webkit-appearance: none; appearance: none;
 }
 .config-input:focus { border-color: var(--accent); }
 .config-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 10px; text-align: center; }
 
 /* ── TAB BAR ── */
 .tab-bar {
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   padding: 5px; display: flex; gap: 3px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .tab-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center;
-  gap: 3px; padding: 8px 4px;
-  border: none; background: transparent;
-  border-radius: var(--radius-xs);
+  gap: 3px; padding: 8px 2px;
+  border: none; background: transparent; border-radius: var(--radius-xs);
   font-family: inherit; font-size: 10px; font-weight: 500;
-  color: var(--text-secondary); cursor: pointer; transition: all 0.18s;
-  -webkit-appearance: none;
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  -webkit-appearance: none; appearance: none;
+  /* Prevent blue flash on tap */
+  -webkit-tap-highlight-color: transparent;
 }
-.tab-btn .tab-icon { font-size: 19px; line-height: 1; }
-.tab-btn:active { background: var(--surface2); }
+.tab-btn .tab-icon { font-size: 18px; line-height: 1; }
+/* Active state: only when JS adds .active */
 .tab-btn.active { background: var(--accent); color: #fff; }
+/* No :active CSS pseudo — handled via JS to avoid sticky state */
 
-/* ── MODE PANELS ── */
+/* ── PANELS ── */
 .mode-panel { display: none; }
 .mode-panel.active { display: block; }
 
 /* ── CARD ── */
 .card {
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   overflow: hidden; margin-bottom: 10px;
@@ -180,7 +223,6 @@ body {
 .card-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; line-height: 1.45; }
 .card-body { padding: 14px 16px; }
 
-/* source extra row */
 .source-row { display: flex; gap: 10px; margin-bottom: 12px; }
 .source-row .config-field { flex: 1; }
 
@@ -190,27 +232,28 @@ body {
   border: none; outline: none; resize: none;
   font-family: inherit; font-size: 16px; font-weight: 400;
   color: var(--text); line-height: 1.65; min-height: 160px;
-  -webkit-appearance: none;
+  -webkit-appearance: none; appearance: none;
 }
 .narrative-input::placeholder { color: var(--text-tertiary); }
 
 /* ── PRIMARY BUTTON ── */
 .primary-btn {
-  width: 100%; padding: 15px;
-  background: var(--accent); border: none;
-  border-radius: var(--radius-sm);
+  width: 100%; padding: 15px; background: var(--accent);
+  border: none; border-radius: var(--radius-sm);
   font-family: inherit; font-size: 15px; font-weight: 600;
   color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  transition: opacity 0.15s, transform 0.1s;
   box-shadow: 0 2px 10px rgba(0,122,255,0.25);
-  -webkit-appearance: none; margin-top: 4px;
+  -webkit-appearance: none; appearance: none;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-top: 4px;
 }
 .primary-btn:active { opacity: 0.82; transform: scale(0.99); }
 .primary-btn:disabled { opacity: 0.4; box-shadow: none; }
 .primary-btn .btn-loading { display: none; }
 .primary-btn.loading .btn-text { display: none; }
 .primary-btn.loading .btn-loading { display: flex; align-items: center; gap: 8px; }
+
 .dot-loader { display: flex; gap: 4px; }
 .dot-loader span { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: dp 1.2s ease-in-out infinite; }
 .dot-loader span:nth-child(2){animation-delay:0.2s;} .dot-loader span:nth-child(3){animation-delay:0.4s;}
@@ -219,28 +262,29 @@ body {
 /* ── CONTRADICTION BANNER ── */
 .contradiction-banner {
   display: none; background: #fff8ed;
-  border: 1px solid rgba(255,149,0,0.3);
+  border: 1px solid rgba(255,149,0,0.28);
   border-radius: var(--radius); padding: 16px; margin-top: 10px;
 }
 .contradiction-banner.visible { display: block; }
-.contradiction-banner h3 { font-size: 14px; font-weight: 600; color: var(--accent-orange); margin-bottom: 12px; }
+.contradiction-banner h3 { font-size: 14px; font-weight: 600; color: var(--accent-orange); margin-bottom: 10px; }
 .contradiction-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .contradiction-item {
   font-size: 13px; line-height: 1.5; color: var(--text);
   padding: 10px 12px; background: rgba(255,149,0,0.06);
   border-radius: var(--radius-xs); border-left: 2px solid var(--accent-orange);
 }
-.contradiction-item strong { display: block; margin-bottom: 3px; color: #000; }
+.contradiction-item strong { display: block; margin-bottom: 3px; }
 .contradiction-actions { display: flex; gap: 8px; margin-top: 12px; }
 .c-btn {
   flex: 1; padding: 12px; background: var(--surface2);
   border: 1px solid var(--border); border-radius: var(--radius-xs);
   font-family: inherit; font-size: 13px; font-weight: 500;
   color: var(--text); cursor: pointer; text-align: center;
-  transition: background 0.15s; -webkit-appearance: none;
+  -webkit-appearance: none; appearance: none;
+  transition: background 0.15s;
 }
 .c-btn:active { background: #e5e5ea; }
-.c-btn.proceed { background: #edfaf2; border-color: rgba(52,199,89,0.35); color: #1a7a3c; font-weight: 600; }
+.c-btn.proceed { background: #edfaf2; border-color: rgba(52,199,89,0.3); color: #1a7a3c; font-weight: 600; }
 
 /* ── SYNTHESIS ── */
 .synthesis-panel {
@@ -254,15 +298,14 @@ body {
 .synthesis-panel p { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
 .synthesis-text {
   font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap;
-  outline: none; border-bottom: 1px solid var(--border);
-  padding-bottom: 12px; margin-bottom: 12px;
+  outline: none; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;
 }
 .synthesis-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .s-btn {
   padding: 9px 14px; background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--radius-xs); font-family: inherit; font-size: 13px;
-  font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.15s;
-  -webkit-appearance: none;
+  font-weight: 500; color: var(--text); cursor: pointer;
+  -webkit-appearance: none; appearance: none; transition: background 0.15s;
 }
 .s-btn:active { background: #e5e5ea; }
 .s-btn.destructive { color: var(--accent-red); }
@@ -271,6 +314,7 @@ body {
 .results-panel { display: none; margin-top: 10px; animation: fadeUp 0.3s ease; }
 .results-panel.visible { display: block; }
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
 .results-title {
   font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
   text-transform: uppercase; color: var(--text-secondary);
@@ -278,7 +322,6 @@ body {
 }
 .sep { height: 1px; background: var(--border); margin: 14px 0; }
 
-/* Data cards */
 .data-card {
   background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border); overflow: hidden; margin-bottom: 10px;
@@ -290,37 +333,29 @@ body {
   background: var(--surface2);
 }
 .data-card-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
-.data-card-badge {
-  font-size: 10px; font-weight: 600; padding: 3px 8px;
-  border-radius: 20px; letter-spacing: 0.03em;
-}
+.data-card-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
 .badge-character { background: rgba(0,122,255,0.1); color: var(--accent); }
 .badge-trait { background: rgba(52,199,89,0.12); color: #1a7a3c; }
 .badge-arc { background: rgba(255,149,0,0.12); color: #b56b00; }
 .data-card-body { padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .data-field { display: flex; flex-direction: column; gap: 3px; }
 .data-field.full { grid-column: 1/-1; }
-.data-field-key {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--text-secondary);
-}
+.data-field-key { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); }
 .data-field-value { font-size: 14px; color: var(--text); line-height: 1.5; }
 .data-field-value.long { font-size: 15px; line-height: 1.65; font-weight: 300; }
 .data-field-value[contenteditable="true"] { border-bottom: 1px solid var(--border); padding-bottom: 2px; outline: none; }
 .data-field-value[contenteditable="true"]:focus { border-bottom-color: var(--accent); }
 
-/* ── ACTIONS ── */
 .notion-actions { display: flex; gap: 10px; margin-top: 14px; margin-bottom: 6px; }
 .secondary-btn {
-  flex: 1; padding: 14px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); font-family: inherit;
-  font-size: 15px; font-weight: 500; color: var(--text);
-  cursor: pointer; text-align: center; transition: background 0.15s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  -webkit-appearance: none;
+  flex: 1; padding: 14px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px; font-weight: 500; color: var(--text);
+  cursor: pointer; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  -webkit-appearance: none; appearance: none; transition: background 0.15s;
 }
-.secondary-btn:active { background: var(--surface2); }
+.secondary-btn:active { background: #e5e5ea; }
 .secondary-btn.green {
   background: var(--accent-green); border-color: var(--accent-green);
   color: #fff; font-weight: 600;
@@ -329,11 +364,9 @@ body {
 .secondary-btn.green:active { opacity: 0.85; }
 .secondary-btn:disabled { opacity: 0.4; }
 
-/* ── LOG ── */
 .log-terminal {
-  display: none; background: #1c1c1e;
-  border-radius: var(--radius-xs); padding: 12px 14px;
-  max-height: 180px; overflow-y: auto; margin-top: 10px;
+  display: none; background: #1c1c1e; border-radius: var(--radius-xs);
+  padding: 12px 14px; max-height: 180px; overflow-y: auto; margin-top: 10px;
   font-family: 'SF Mono','Fira Code',monospace;
 }
 .log-terminal.visible { display: block; }
@@ -341,13 +374,44 @@ body {
 .log-ts { color: #636366; flex-shrink: 0; }
 .log-ok{color:#30D158;} .log-err{color:#FF453A;} .log-info{color:#0A84FF;} .log-warn{color:#FF9F0A;}
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
 
-@media (max-width: 400px) {
-  .tab-btn { font-size: 9px; padding: 7px 2px; }
-  .tab-btn .tab-icon { font-size: 17px; }
+/* ── RESPONSIVE: iPad (Air M2 = 820pt wide) ── */
+@media (min-width: 768px) {
+  .app { padding-left: calc(var(--safe-left) + 24px); padding-right: calc(var(--safe-right) + 24px); }
+  .app-header-title { font-size: 26px; }
+  .tab-btn { font-size: 11px; padding: 10px 4px; }
+  .tab-btn .tab-icon { font-size: 20px; }
+  .card-title { font-size: 19px; }
+  .narrative-input { font-size: 17px; min-height: 200px; }
+  .primary-btn { font-size: 17px; padding: 17px; }
+  .config-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* iPad landscape: two-column layout for input + results */
+@media (min-width: 1024px) {
+  .app { max-width: 960px; }
+  .config-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── iPhone landscape (XS Max = 414pt, 12 Pro Max = 430pt in landscape ≈ 926pt wide) ── */
+@media (orientation: landscape) and (max-height: 430px) {
+  .app {
+    padding-top: calc(var(--safe-top) + 6px);
+    padding-bottom: calc(var(--safe-bottom) + 10px);
+    /* Extra horizontal padding for notch/island in landscape */
+    padding-left: calc(var(--safe-left) + 20px);
+    padding-right: calc(var(--safe-right) + 20px);
+  }
+  .app-header { padding-bottom: 10px; }
+  .app-header-title { font-size: 18px; }
+  .tab-btn { padding: 6px 2px; gap: 2px; }
+  .tab-btn .tab-icon { font-size: 16px; }
+  .tab-bar { margin-bottom: 10px; }
+  .narrative-input { min-height: 100px; }
+  .card-header { padding: 10px 14px 8px; }
+  .card-body { padding: 10px 14px; }
 }
 </style>
 </head>
@@ -359,7 +423,7 @@ body {
     <div class="lock-icon-wrap">⬡</div>
     <div style="text-align:center;">
       <div class="lock-title">Narrative <span>OS</span></div>
-      <div class="lock-sub" style="margin-top:6px;">Accesso protetto</div>
+      <div class="lock-sub">Accesso protetto</div>
     </div>
     <input type="password" id="lock-password" placeholder="Password"
            autocomplete="current-password"
@@ -378,10 +442,9 @@ body {
       <div class="app-header-title">Narrative <span>OS</span></div>
       <div class="app-header-sub">Narrativa → Notion</div>
     </div>
-    <button class="header-btn" onclick="toggleConfig()" title="Database IDs">⚙️</button>
+    <button class="header-btn" id="config-toggle-btn" title="Database IDs">⚙️</button>
   </div>
 
-  <!-- CONFIG (hidden, opens on gear tap) -->
   <div class="config-panel" id="config-panel">
     <div class="config-inner">
       <div class="config-label">Database IDs</div>
@@ -397,13 +460,12 @@ body {
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="setMode('character')" id="btn-character"><span class="tab-icon">👤</span><span>Personaggio</span></button>
-    <button class="tab-btn" onclick="setMode('event')" id="btn-event"><span class="tab-icon">📅</span><span>Evento</span></button>
-    <button class="tab-btn" onclick="setMode('location')" id="btn-location"><span class="tab-icon">🏚️</span><span>Luogo</span></button>
-    <button class="tab-btn" onclick="setMode('object')" id="btn-object"><span class="tab-icon">🔮</span><span>Oggetto</span></button>
-    <button class="tab-btn" onclick="setMode('source')" id="btn-source"><span class="tab-icon">📰</span><span>Fonte</span></button>
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" data-mode="character" id="btn-character"><span class="tab-icon">👤</span><span>Personaggio</span></button>
+    <button class="tab-btn" data-mode="event" id="btn-event"><span class="tab-icon">📅</span><span>Evento</span></button>
+    <button class="tab-btn" data-mode="location" id="btn-location"><span class="tab-icon">🏚️</span><span>Luogo</span></button>
+    <button class="tab-btn" data-mode="object" id="btn-object"><span class="tab-icon">🔮</span><span>Oggetto</span></button>
+    <button class="tab-btn" data-mode="source" id="btn-source"><span class="tab-icon">📰</span><span>Fonte</span></button>
   </div>
 
   <!-- CHARACTER -->
@@ -557,18 +619,46 @@ body {
     <div class="log-terminal" id="log-terminal"></div>
   </div>
 
-</div>
+</div><!-- /app -->
+
 <script>
-let sessionPassword = null;
+// ── TAB HANDLING (JS-only, no CSS :active sticky state) ──
+document.getElementById('tab-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  setMode(btn.dataset.mode);
+});
 
-function toggleConfig() {
+// ── CONFIG TOGGLE ──
+document.getElementById('config-toggle-btn').addEventListener('click', () => {
   document.getElementById('config-panel').classList.toggle('open');
-}
+});
 
-function toggleConfig() {
-  const p = document.getElementById("config-panel");
-  p.classList.toggle("collapsed");
-}
+// ── ORIENTATION FIX ──
+// Forces layout recalc on orientation change to prevent scale stuck bug
+window.addEventListener('orientationchange', () => {
+  // Small delay to let browser settle
+  setTimeout(() => {
+    document.body.style.display = 'none';
+    // Force reflow
+    void document.body.offsetHeight;
+    document.body.style.display = '';
+  }, 100);
+});
+
+// Also handle resize (covers both orientation and split-view on iPad)
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    window.scrollTo(0, window.scrollY); // nudge scroll to re-evaluate safe areas
+  }, 150);
+});
+
+</script>
+
+
+<script>
 let currentMode = 'character';
 let extractedData = null;
 let pendingExtractedData = null; // holds data while waiting for contradiction decision
@@ -1219,9 +1309,5 @@ function resetTool() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
-</body>
-</html>
-</body>
-</html>
 </body>
 </html>
