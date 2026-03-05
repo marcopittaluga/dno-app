@@ -460,7 +460,7 @@ body {
   <!-- CONFIG (slides down from top, above tabs) -->
   <div class="config-panel" id="config-panel">
     <div class="config-inner">
-      <div class="config-label">Database IDs</div>
+      <div class="config-label">Database IDs <span id="schema-badge" style="font-size:10px;font-weight:500;margin-left:8px;color:var(--text-tertiary);">· locali</span></div>
       <div class="config-grid">
         <div class="config-field"><label>Characters</label><input class="config-input" type="text" id="db-characters" value="314ddcfee7cd80c8af01de99f43dbf57"/></div>
         <div class="config-field"><label>Traits</label><input class="config-input" type="text" id="db-traits" value="314ddcfee7cd8027b95bdfbf4fd215ce"/></div>
@@ -754,6 +754,51 @@ let currentMode = 'character';
 let extractedData = null;
 let pendingExtractedData = null; // holds data while waiting for contradiction decision
 
+// ─── SCHEMA LOADER ────────────────────────────────────────────────
+// Modifica questo URL con il tuo repo GitHub
+const SCHEMA_URL = 'https://raw.githubusercontent.com/marcopittaluga/dno-app/main/schema.json';
+let _schema = null;
+
+async function loadSchema() {
+  if (_schema) return _schema;
+  try {
+    const res = await fetch(SCHEMA_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('Schema non raggiungibile');
+    _schema = await res.json();
+    applySchemaToUI(_schema);
+    console.log('[Schema] Caricato v' + _schema._meta.version + ' — ' + _schema._meta.last_updated);
+  } catch(e) {
+    console.warn('[Schema] Fallback agli ID locali:', e.message);
+  }
+  return _schema;
+}
+
+function applySchemaToUI(schema) {
+  const dbs = schema?.notion?.databases;
+  if (!dbs) return;
+  const map = {
+    'db-characters': dbs.characters?.id,
+    'db-traits':     dbs.traits?.id,
+    'db-arcs':       dbs.arcs?.id,
+    'db-timeline':   dbs.timeline?.id,
+    'db-locations':  dbs.locations?.id,
+    'db-objects':    dbs.objects?.id,
+  };
+  for (const [inputId, val] of Object.entries(map)) {
+    const el = document.getElementById(inputId);
+    if (el && val) {
+      el.value = val;
+      el.style.borderColor = 'var(--accent-green)';
+    }
+  }
+  const badge = document.getElementById('schema-badge');
+  if (badge) { badge.textContent = '· da GitHub ✓'; badge.style.color = 'var(--accent-green)'; }
+  const sub = document.querySelector('.app-header-sub');
+  if (sub && schema._meta?.last_updated) {
+    sub.textContent = 'Schema v' + schema._meta.version + ' · ' + schema._meta.last_updated;
+  }
+}
+
 // ─── UNLOCK ──────────────────────────────────────────────────────
 async function unlock() {
   const pwd = document.getElementById('lock-password').value;
@@ -774,6 +819,7 @@ async function unlock() {
       pwdEl.focus(); return;
     }
     sessionPassword = pwd;
+    loadSchema(); // carica schema.json da GitHub dopo il login
     const ls = document.getElementById('lock-screen');
     ls.style.transition = 'opacity 0.4s ease'; ls.style.opacity = '0';
     setTimeout(() => ls.style.display = 'none', 400);
