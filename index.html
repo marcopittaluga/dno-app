@@ -9,9 +9,9 @@
 <meta name="theme-color" content="#f2f2f7">
 <title>Deep Narrative OS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* SF Pro / San Francisco — system font stack as Apple specifies */
 :root {
+  --sf: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   --bg: #f2f2f7;
   --surface: #ffffff;
   --surface2: #f2f2f7;
@@ -40,7 +40,6 @@
 
 html {
   background: var(--bg);
-  /* Prevent scale bounce on orientation change */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -48,14 +47,14 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-family: var(--sf);
   min-height: 100dvh;
   min-height: -webkit-fill-available;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* ── LOCK SCREEN ── */
+/* ── LOCK ── */
 #lock-screen {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
@@ -65,30 +64,24 @@ body {
            calc(var(--safe-bottom) + 24px)
            calc(var(--safe-left) + 24px);
 }
-
 .lock-box {
   display: flex; flex-direction: column; align-items: center; gap: 24px;
   width: 100%; max-width: 320px;
 }
-
 .lock-icon-wrap {
   width: 72px; height: 72px; border-radius: 18px;
   background: var(--accent);
   display: flex; align-items: center; justify-content: center;
-  font-size: 32px;
   box-shadow: 0 4px 20px rgba(0,122,255,0.30);
-  flex-shrink: 0;
 }
-
 .lock-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; text-align: center; }
 .lock-title span { color: var(--accent); }
 .lock-sub { font-size: 13px; color: var(--text-secondary); text-align: center; }
-
 #lock-password {
   width: 100%; background: var(--surface);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm); padding: 15px 18px;
-  font-family: inherit; font-size: 17px; color: var(--text);
+  font-family: var(--sf); font-size: 17px; color: var(--text);
   text-align: center; letter-spacing: 0.08em; outline: none;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   transition: border-color 0.2s;
@@ -97,35 +90,31 @@ body {
 #lock-password:focus { border-color: var(--accent); }
 #lock-password::placeholder { color: var(--text-tertiary); letter-spacing: 0; font-size: 15px; }
 #lock-password.err { border-color: var(--accent-red); animation: shake 0.4s ease; }
-
 @keyframes shake {
   0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
   40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
 }
-
 .lock-btn {
   width: 100%; padding: 15px; background: var(--accent);
   border: none; border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 17px; font-weight: 600;
+  font-family: var(--sf); font-size: 17px; font-weight: 600;
   color: #fff; cursor: pointer;
   box-shadow: 0 2px 12px rgba(0,122,255,0.3);
   -webkit-appearance: none; appearance: none;
   transition: opacity 0.15s, transform 0.1s;
 }
 .lock-btn:active { opacity: 0.82; transform: scale(0.98); }
-
 .lock-err { font-size: 13px; color: var(--accent-red); text-align: center; min-height: 18px; }
 .lock-footer { font-size: 11px; color: var(--text-tertiary); text-align: center; }
 
-/* Landscape lock: horizontal layout */
 @media (orientation: landscape) and (max-height: 500px) {
   .lock-box { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 16px; max-width: 560px; }
-  .lock-icon-wrap { width: 56px; height: 56px; font-size: 26px; }
+  .lock-icon-wrap { width: 52px; height: 52px; }
   .lock-title { font-size: 22px; }
   #lock-password, .lock-btn { max-width: 280px; }
 }
 
-/* ── APP SHELL ── */
+/* ── APP ── */
 .app {
   max-width: 720px; margin: 0 auto;
   padding-top: calc(var(--safe-top) + 14px);
@@ -142,7 +131,6 @@ body {
 .app-header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
 .app-header-title span { color: var(--accent); }
 .app-header-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
-
 .header-btn {
   width: 34px; height: 34px; border-radius: 50%;
   background: var(--surface); border: 1px solid var(--border);
@@ -154,14 +142,13 @@ body {
 }
 .header-btn:active { background: #e5e5ea; }
 
-/* ── CONFIG PANEL ── */
+/* ── CONFIG ── */
 .config-panel {
   background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: 0 2px 10px rgba(0,0,0,0.07);
   overflow: hidden; margin-bottom: 14px;
-  display: none;
-  animation: slideDown 0.2s ease;
+  display: none; animation: slideDown 0.2s ease;
 }
 @keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 .config-panel.open { display: block; }
@@ -176,7 +163,7 @@ body {
 .config-input {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--radius-xs); padding: 8px 10px;
-  font-family: 'SF Mono','Fira Code',monospace; font-size: 10px; color: var(--text);
+  font-family: 'SF Mono', ui-monospace, monospace; font-size: 10px; color: var(--text);
   width: 100%; outline: none; transition: border-color 0.2s;
   -webkit-appearance: none; appearance: none;
 }
@@ -191,21 +178,40 @@ body {
   padding: 5px; display: flex; gap: 3px;
   margin-bottom: 14px;
 }
+
 .tab-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  gap: 3px; padding: 8px 2px;
-  border: none; background: transparent; border-radius: var(--radius-xs);
-  font-family: inherit; font-size: 10px; font-weight: 500;
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px;
+  /* Square-ish with rounded corners matching icon style */
+  aspect-ratio: 1 / 1;
+  border: none; background: transparent;
+  border-radius: 13px;
+  font-family: var(--sf); font-size: 9px; font-weight: 500;
   color: var(--text-secondary); cursor: pointer;
   transition: background 0.15s, color 0.15s;
   -webkit-appearance: none; appearance: none;
-  /* Prevent blue flash on tap */
   -webkit-tap-highlight-color: transparent;
+  padding: 6px 2px;
 }
-.tab-btn .tab-icon { font-size: 18px; line-height: 1; }
-/* Active state: only when JS adds .active */
-.tab-btn.active { background: var(--accent); color: #fff; }
-/* No :active CSS pseudo — handled via JS to avoid sticky state */
+
+.tab-btn svg {
+  width: 24px; height: 24px;
+  /* Default: dark stroke on white bg */
+  stroke: #3a3a3c;
+  fill: none;
+  transition: stroke 0.15s;
+  flex-shrink: 0;
+}
+
+/* Active tab: black bg, white icon */
+.tab-btn.active {
+  background: #1c1c1e;
+  color: #ffffff;
+}
+.tab-btn.active svg {
+  stroke: #ffffff;
+}
 
 /* ── PANELS ── */
 .mode-panel { display: none; }
@@ -222,7 +228,6 @@ body {
 .card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
 .card-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; line-height: 1.45; }
 .card-body { padding: 14px 16px; }
-
 .source-row { display: flex; gap: 10px; margin-bottom: 12px; }
 .source-row .config-field { flex: 1; }
 
@@ -230,7 +235,7 @@ body {
 .narrative-input {
   width: 100%; background: transparent;
   border: none; outline: none; resize: none;
-  font-family: inherit; font-size: 16px; font-weight: 400;
+  font-family: var(--sf); font-size: 16px; font-weight: 400;
   color: var(--text); line-height: 1.65; min-height: 160px;
   -webkit-appearance: none; appearance: none;
 }
@@ -240,26 +245,24 @@ body {
 .primary-btn {
   width: 100%; padding: 15px; background: var(--accent);
   border: none; border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px; font-weight: 600;
+  font-family: var(--sf); font-size: 15px; font-weight: 600;
   color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   box-shadow: 0 2px 10px rgba(0,122,255,0.25);
   -webkit-appearance: none; appearance: none;
-  transition: opacity 0.15s, transform 0.1s;
-  margin-top: 4px;
+  transition: opacity 0.15s, transform 0.1s; margin-top: 4px;
 }
 .primary-btn:active { opacity: 0.82; transform: scale(0.99); }
 .primary-btn:disabled { opacity: 0.4; box-shadow: none; }
 .primary-btn .btn-loading { display: none; }
 .primary-btn.loading .btn-text { display: none; }
 .primary-btn.loading .btn-loading { display: flex; align-items: center; gap: 8px; }
-
 .dot-loader { display: flex; gap: 4px; }
 .dot-loader span { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: dp 1.2s ease-in-out infinite; }
 .dot-loader span:nth-child(2){animation-delay:0.2s;} .dot-loader span:nth-child(3){animation-delay:0.4s;}
 @keyframes dp{0%,80%,100%{opacity:0.3;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
 
-/* ── CONTRADICTION BANNER ── */
+/* ── CONTRADICTION ── */
 .contradiction-banner {
   display: none; background: #fff8ed;
   border: 1px solid rgba(255,149,0,0.28);
@@ -278,10 +281,9 @@ body {
 .c-btn {
   flex: 1; padding: 12px; background: var(--surface2);
   border: 1px solid var(--border); border-radius: var(--radius-xs);
-  font-family: inherit; font-size: 13px; font-weight: 500;
+  font-family: var(--sf); font-size: 13px; font-weight: 500;
   color: var(--text); cursor: pointer; text-align: center;
-  -webkit-appearance: none; appearance: none;
-  transition: background 0.15s;
+  -webkit-appearance: none; appearance: none; transition: background 0.15s;
 }
 .c-btn:active { background: #e5e5ea; }
 .c-btn.proceed { background: #edfaf2; border-color: rgba(52,199,89,0.3); color: #1a7a3c; font-weight: 600; }
@@ -303,7 +305,7 @@ body {
 .synthesis-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .s-btn {
   padding: 9px 14px; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-xs); font-family: inherit; font-size: 13px;
+  border-radius: var(--radius-xs); font-family: var(--sf); font-size: 13px;
   font-weight: 500; color: var(--text); cursor: pointer;
   -webkit-appearance: none; appearance: none; transition: background 0.15s;
 }
@@ -314,7 +316,6 @@ body {
 .results-panel { display: none; margin-top: 10px; animation: fadeUp 0.3s ease; }
 .results-panel.visible { display: block; }
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
 .results-title {
   font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
   text-transform: uppercase; color: var(--text-secondary);
@@ -350,7 +351,7 @@ body {
 .secondary-btn {
   flex: 1; padding: 14px; background: var(--surface);
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px; font-weight: 500; color: var(--text);
+  font-family: var(--sf); font-size: 15px; font-weight: 500; color: var(--text);
   cursor: pointer; text-align: center;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   -webkit-appearance: none; appearance: none; transition: background 0.15s;
@@ -367,7 +368,7 @@ body {
 .log-terminal {
   display: none; background: #1c1c1e; border-radius: var(--radius-xs);
   padding: 12px 14px; max-height: 180px; overflow-y: auto; margin-top: 10px;
-  font-family: 'SF Mono','Fira Code',monospace;
+  font-family: 'SF Mono', ui-monospace, monospace;
 }
 .log-terminal.visible { display: block; }
 .log-line { font-size: 11px; line-height: 1.8; display: flex; gap: 10px; }
@@ -377,39 +378,33 @@ body {
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
 
-/* ── RESPONSIVE: iPad (Air M2 = 820pt wide) ── */
+/* ── RESPONSIVE ── */
 @media (min-width: 768px) {
   .app { padding-left: calc(var(--safe-left) + 24px); padding-right: calc(var(--safe-right) + 24px); }
   .app-header-title { font-size: 26px; }
-  .tab-btn { font-size: 11px; padding: 10px 4px; }
-  .tab-btn .tab-icon { font-size: 20px; }
+  .tab-btn { font-size: 10px; }
+  .tab-btn svg { width: 26px; height: 26px; }
+  .config-grid { grid-template-columns: repeat(3, 1fr); }
   .card-title { font-size: 19px; }
   .narrative-input { font-size: 17px; min-height: 200px; }
   .primary-btn { font-size: 17px; padding: 17px; }
-  .config-grid { grid-template-columns: repeat(3, 1fr); }
 }
-
-/* iPad landscape: two-column layout for input + results */
 @media (min-width: 1024px) {
   .app { max-width: 960px; }
-  .config-grid { grid-template-columns: repeat(3, 1fr); }
 }
-
-/* ── iPhone landscape (XS Max = 414pt, 12 Pro Max = 430pt in landscape ≈ 926pt wide) ── */
 @media (orientation: landscape) and (max-height: 430px) {
   .app {
     padding-top: calc(var(--safe-top) + 6px);
     padding-bottom: calc(var(--safe-bottom) + 10px);
-    /* Extra horizontal padding for notch/island in landscape */
     padding-left: calc(var(--safe-left) + 20px);
     padding-right: calc(var(--safe-right) + 20px);
   }
   .app-header { padding-bottom: 10px; }
   .app-header-title { font-size: 18px; }
-  .tab-btn { padding: 6px 2px; gap: 2px; }
-  .tab-btn .tab-icon { font-size: 16px; }
-  .tab-bar { margin-bottom: 10px; }
-  .narrative-input { min-height: 100px; }
+  .tab-btn { gap: 3px; padding: 5px 2px; }
+  .tab-btn svg { width: 20px; height: 20px; }
+  .tab-bar { margin-bottom: 8px; }
+  .narrative-input { min-height: 90px; }
   .card-header { padding: 10px 14px 8px; }
   .card-body { padding: 10px 14px; }
 }
@@ -420,7 +415,13 @@ body {
 <!-- LOCK -->
 <div id="lock-screen">
   <div class="lock-box">
-    <div class="lock-icon-wrap">⬡</div>
+    <div class="lock-icon-wrap">
+      <!-- Lock icon in SF style -->
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="14" width="20" height="14" rx="4"/>
+        <path d="M10 14v-4a6 6 0 0 1 12 0v4"/>
+      </svg>
+    </div>
     <div style="text-align:center;">
       <div class="lock-title">Narrative <span>OS</span></div>
       <div class="lock-sub">Accesso protetto</div>
@@ -460,12 +461,62 @@ body {
     </div>
   </div>
 
+  <!-- TAB BAR — SVG icons matching uploaded line art style -->
   <div class="tab-bar" id="tab-bar">
-    <button class="tab-btn active" data-mode="character" id="btn-character"><span class="tab-icon">👤</span><span>Personaggio</span></button>
-    <button class="tab-btn" data-mode="event" id="btn-event"><span class="tab-icon">📅</span><span>Evento</span></button>
-    <button class="tab-btn" data-mode="location" id="btn-location"><span class="tab-icon">🏚️</span><span>Luogo</span></button>
-    <button class="tab-btn" data-mode="object" id="btn-object"><span class="tab-icon">🔮</span><span>Oggetto</span></button>
-    <button class="tab-btn" data-mode="source" id="btn-source"><span class="tab-icon">📰</span><span>Fonte</span></button>
+
+    <!-- Personaggio: persona con cerchio -->
+    <button class="tab-btn active" data-mode="character" id="btn-character">
+      <svg viewBox="0 0 28 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="14" cy="14" r="11.5"/>
+        <circle cx="14" cy="11" r="3.5"/>
+        <path d="M7 22c0-3.866 3.134-7 7-7s7 3.134 7 7"/>
+      </svg>
+      <span>Personaggio</span>
+    </button>
+
+    <!-- Evento: calendario -->
+    <button class="tab-btn" data-mode="event" id="btn-event">
+      <svg viewBox="0 0 28 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="6" width="20" height="18" rx="4"/>
+        <path d="M4 11h20"/>
+        <path d="M9 4v4M19 4v4"/>
+        <rect x="8.5" y="15" width="3" height="3" rx="1" fill="currentColor" stroke="none"/>
+        <rect x="13.5" y="15" width="3" height="3" rx="1" fill="currentColor" stroke="none"/>
+      </svg>
+      <span>Evento</span>
+    </button>
+
+    <!-- Luogo: foto landscape in rounded square -->
+    <button class="tab-btn" data-mode="location" id="btn-location">
+      <svg viewBox="0 0 28 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="22" height="18" rx="5"/>
+        <circle cx="10" cy="11.5" r="2.5"/>
+        <path d="M3 19l6-5.5 4 4 3.5-3 8.5 6.5"/>
+      </svg>
+      <span>Luogo</span>
+    </button>
+
+    <!-- Oggetto: pin/thumbtack -->
+    <button class="tab-btn" data-mode="object" id="btn-object">
+      <svg viewBox="0 0 28 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.5 4.5L23.5 10.5"/>
+        <path d="M14 8L20 14L17 17L11.5 11.5"/>
+        <path d="M11.5 11.5L6 17"/>
+        <path d="M8 20L4 24"/>
+        <path d="M14 8L8.5 13.5"/>
+      </svg>
+      <span>Oggetto</span>
+    </button>
+
+    <!-- Fonte: aeroplano di carta -->
+    <button class="tab-btn" data-mode="source" id="btn-source">
+      <svg viewBox="0 0 28 28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 4L4 13l8 3 3 8 9-20z"/>
+        <path d="M12 17l4-4"/>
+      </svg>
+      <span>Fonte</span>
+    </button>
+
   </div>
 
   <!-- CHARACTER -->
@@ -579,11 +630,11 @@ body {
         <div class="source-row">
           <div class="config-field">
             <label>Personaggio (opzionale)</label>
-            <input class="config-input" type="text" id="source-character-name" placeholder="es. Deva Luce" />
+            <input class="config-input" type="text" id="source-character-name" placeholder="es. Deva Luce"/>
           </div>
           <div class="config-field" style="max-width:120px;">
             <label>Tipo fonte</label>
-            <input class="config-input" type="text" id="source-type" placeholder="articolo..." />
+            <input class="config-input" type="text" id="source-type" placeholder="articolo..."/>
           </div>
         </div>
         <div class="sep"></div>
@@ -622,41 +673,38 @@ body {
 </div><!-- /app -->
 
 <script>
-// ── TAB HANDLING (JS-only, no CSS :active sticky state) ──
+// ── UI WIRING ──────────────────────────────────────────────────────
+
+// Tab bar: delegation, clean active toggle
 document.getElementById('tab-bar').addEventListener('click', e => {
   const btn = e.target.closest('.tab-btn');
-  if (!btn) return;
+  if (!btn || !btn.dataset.mode) return;
   setMode(btn.dataset.mode);
 });
 
-// ── CONFIG TOGGLE ──
+// Config toggle
 document.getElementById('config-toggle-btn').addEventListener('click', () => {
   document.getElementById('config-panel').classList.toggle('open');
 });
 
-// ── ORIENTATION FIX ──
-// Forces layout recalc on orientation change to prevent scale stuck bug
+// Orientation / resize fix
 window.addEventListener('orientationchange', () => {
-  // Small delay to let browser settle
   setTimeout(() => {
     document.body.style.display = 'none';
-    // Force reflow
     void document.body.offsetHeight;
     document.body.style.display = '';
-  }, 100);
+  }, 120);
 });
-
-// Also handle resize (covers both orientation and split-view on iPad)
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    window.scrollTo(0, window.scrollY); // nudge scroll to re-evaluate safe areas
-  }, 150);
+  resizeTimer = setTimeout(() => { window.scrollTo(0, window.scrollY); }, 150);
 });
 
-</script>
+// Password field: clear sessionPassword var declaration space
+let sessionPassword = null;
 
+</script>
 
 <script>
 let currentMode = 'character';
@@ -692,7 +740,7 @@ async function unlock() {
 // ─── MODE ─────────────────────────────────────────────────────────
 function setMode(mode) {
   currentMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('btn-' + mode).classList.add('active');
   document.getElementById('panel-' + mode).classList.add('active');
@@ -1308,6 +1356,7 @@ function resetTool() {
   btn.disabled = false; btn.textContent = 'Scrivi su Notion →'; btn.style.background = '';
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
 </script>
 </body>
 </html>
