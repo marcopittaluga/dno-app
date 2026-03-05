@@ -1,132 +1,384 @@
 {
   "_meta": {
-    "version": "1.0.0",
-    "last_updated": "2026-03-04",
-    "updated_by": "manual",
+    "version": "1.1.0",
+    "last_updated": "2026-03-05",
+    "updated_by": "n8n-auto",
     "description": "Source of truth per Deep Narrative OS. Tutti i servizi leggono da questo file."
   },
-
   "notion": {
     "databases": {
-
       "characters": {
         "id": "314ddcfee7cd80c8af01de99f43dbf57",
         "name": "Characters",
         "properties": {
-          "character_name":     { "type": "title",     "notion_key": "character_name" },
-          "archetype":          { "type": "select",    "notion_key": "archetype",
-                                  "options": ["Main", "Secondary", "Antagonist", "Mysterious", "Mentor"] },
-          "dominant_emotion":   { "type": "select",    "notion_key": "dominant_emotion",
-                                  "options": ["Malinconia", "Rabbia", "Euforia", "Terrore", "Vuoto", "Speranza"] },
-          "status":             { "type": "select",    "notion_key": "status",
-                                  "options": ["Active", "Inactive", "Mysterious"] },
-          "visual_description": { "type": "rich_text", "notion_key": "visual description" },
-          "voice_style":        { "type": "rich_text", "notion_key": "voice_style" },
-          "backstory":          { "type": "page_body", "notion_key": null }
+          "character_name": {
+            "type": "title",
+            "notion_key": "character_name"
+          },
+          "archetype": {
+            "type": "select",
+            "notion_key": "archetype",
+            "options": [
+              "Main",
+              "Secondary",
+              "Antagonist",
+              "Mysterious",
+              "Mentor"
+            ]
+          },
+          "dominant_emotion": {
+            "type": "select",
+            "notion_key": "dominant_emotion",
+            "options": [
+              "Malinconia",
+              "Rabbia",
+              "Euforia",
+              "Terrore",
+              "Vuoto",
+              "Speranza"
+            ]
+          },
+          "status": {
+            "type": "select",
+            "notion_key": "status",
+            "options": [
+              "Active",
+              "Inactive",
+              "Mysterious"
+            ]
+          },
+          "visual_description": {
+            "type": "rich_text",
+            "notion_key": "visual description"
+          },
+          "voice_style": {
+            "type": "rich_text",
+            "notion_key": "voice_style"
+          },
+          "backstory": {
+            "type": "page_body",
+            "notion_key": null
+          }
         }
       },
-
       "traits": {
         "id": "314ddcfee7cd8027b95bdfbf4fd215ce",
         "name": "Traits",
         "properties": {
-          "trait_name":  { "type": "title",    "notion_key": "trait_name" },
-          "trait_type":  { "type": "select",   "notion_key": "trait_type",
-                           "options": ["Taboo", "Core Value", "Speech Pattern", "Visual Rule", "Behavioral"] },
-          "severity":    { "type": "select",   "notion_key": "severity",
-                           "options": ["Absolute", "Contextual"] },
-          "description": { "type": "rich_text","notion_key": "description" },
-          "applies_to":  { "type": "relation", "notion_key": "applies_to", "relation_db": "characters" }
+          "trait_name": {
+            "type": "title",
+            "notion_key": "trait_name"
+          },
+          "trait_type": {
+            "type": "select",
+            "notion_key": "trait_type",
+            "options": [
+              "Taboo",
+              "Core Value",
+              "Speech Pattern",
+              "Visual Rule",
+              "Behavioral"
+            ]
+          },
+          "severity": {
+            "type": "select",
+            "notion_key": "severity",
+            "options": [
+              "Absolute",
+              "Contextual"
+            ]
+          },
+          "description": {
+            "type": "rich_text",
+            "notion_key": "description"
+          },
+          "applies_to": {
+            "type": "relation",
+            "notion_key": "applies_to",
+            "relation_db": "characters"
+          }
         }
       },
-
       "arcs": {
         "id": "314ddcfee7cd80afac04f5478dd660b5",
         "name": "Arcs",
         "properties": {
-          "arc_name":            { "type": "title",    "notion_key": "arc_name" },
-          "dominant_emotion":    { "type": "select",   "notion_key": "dominant_emotion",
-                                   "options": ["Malinconia", "Rabbia", "Euforia", "Terrore", "Vuoto", "Speranza"] },
-          "visual_palette":      { "type": "rich_text","notion_key": "Visual palette" },
-          "arc_status":          { "type": "select",   "notion_key": "arc_status",
-                                   "options": ["Planned", "Active", "Completed", "Archived"] },
-          "characters_involved": { "type": "relation", "notion_key": "characters_involved", "relation_db": "characters" }
+          "arc_name": {
+            "type": "title",
+            "notion_key": "arc_name"
+          },
+          "dominant_emotion": {
+            "type": "select",
+            "notion_key": "dominant_emotion",
+            "options": [
+              "Malinconia",
+              "Rabbia",
+              "Euforia",
+              "Terrore",
+              "Vuoto",
+              "Speranza"
+            ]
+          },
+          "visual_palette": {
+            "type": "rich_text",
+            "notion_key": "Visual palette"
+          },
+          "arc_status": {
+            "type": "select",
+            "notion_key": "arc_status",
+            "options": [
+              "Planned",
+              "Active",
+              "Completed",
+              "Archived"
+            ]
+          },
+          "characters_involved": {
+            "type": "relation",
+            "notion_key": "characters_involved",
+            "relation_db": "characters"
+          }
         }
       },
-
       "timeline": {
         "id": "314ddcfee7cd80a0882bf5c32e3eed35",
         "name": "Timeline",
         "properties": {
-          "event_title":         { "type": "title",     "notion_key": "event_title" },
-          "event_type":          { "type": "select",    "notion_key": "event_type",
-                                   "options": ["Anchor", "Support", "Wildcard", "Knowledge"] },
-          "emotional_tone":      { "type": "select",    "notion_key": "emotional_tone",
-                                   "options": ["Malinconia", "Rabbia", "Euforia", "Terrore", "Vuoto", "Speranza"] },
-          "narrative_weight":    { "type": "number",    "notion_key": "narrative_weight", "min": 1, "max": 10 },
-          "status":              { "type": "select",    "notion_key": "status",
-                                   "options": ["planned", "Used", "Archived", "Locked"] },
-          "spoiler_lock":        { "type": "checkbox",  "notion_key": "spoiler_lock" },
-          "embedding_sync":      { "type": "checkbox",  "notion_key": "embedding_sync" },
-          "raw_text":            { "type": "rich_text", "notion_key": "Text" },
-          "knowledge_hint":      { "type": "rich_text", "notion_key": "knowledge_hint" },
-          "arc":                 { "type": "select",    "notion_key": "arc",
-                                   "options": ["Origin", "Ascension", "Fracture", "Redemption", "Void"] },
-          "characters_involved": { "type": "relation",  "notion_key": "characters_involved", "relation_db": "characters" },
-          "location":            { "type": "relation",  "notion_key": "location", "relation_db": "locations" },
-          "objects_involved":    { "type": "relation",  "notion_key": "objects_involved", "relation_db": "objects" }
+          "event_title": {
+            "type": "title",
+            "notion_key": "event_title"
+          },
+          "event_type": {
+            "type": "select",
+            "notion_key": "event_type",
+            "options": [
+              "Anchor",
+              "Support",
+              "Wildcard",
+              "Knowledge"
+            ]
+          },
+          "emotional_tone": {
+            "type": "select",
+            "notion_key": "emotional_tone",
+            "options": [
+              "Malinconia",
+              "Rabbia",
+              "Euforia",
+              "Terrore",
+              "Vuoto",
+              "Speranza"
+            ]
+          },
+          "narrative_weight": {
+            "type": "number",
+            "notion_key": "narrative_weight",
+            "min": 1,
+            "max": 10
+          },
+          "status": {
+            "type": "select",
+            "notion_key": "status",
+            "options": [
+              "planned",
+              "Used",
+              "Archived",
+              "Locked"
+            ]
+          },
+          "spoiler_lock": {
+            "type": "checkbox",
+            "notion_key": "spoiler_lock"
+          },
+          "embedding_sync": {
+            "type": "checkbox",
+            "notion_key": "embedding_sync"
+          },
+          "raw_text": {
+            "type": "rich_text",
+            "notion_key": "Text"
+          },
+          "knowledge_hint": {
+            "type": "rich_text",
+            "notion_key": "knowledge_hint"
+          },
+          "arc": {
+            "type": "select",
+            "notion_key": "arc",
+            "options": [
+              "Origin",
+              "Ascension",
+              "Fracture",
+              "Redemption",
+              "Void"
+            ]
+          },
+          "characters_involved": {
+            "type": "relation",
+            "notion_key": "characters_involved",
+            "relation_db": "characters"
+          },
+          "location": {
+            "type": "relation",
+            "notion_key": "location",
+            "relation_db": "locations"
+          },
+          "objects_involved": {
+            "type": "relation",
+            "notion_key": "objects_involved",
+            "relation_db": "objects"
+          }
         }
       },
-
       "locations": {
         "id": "314ddcfee7cd80438975d8406e750e15",
         "name": "Locations",
         "properties": {
-          "location_name": { "type": "title",    "notion_key": "location_name" },
-          "location_type": { "type": "select",   "notion_key": "location_type",
-                             "options": ["Interno", "Esterno", "Astratto", "Ricorrente"] },
-          "mood":          { "type": "select",   "notion_key": "mood",
-                             "options": ["Malinconia", "Rabbia", "Euforia", "Terrore", "Vuoto", "Speranza", "Ambiguo"] },
-          "visual_code":   { "type": "rich_text","notion_key": "visual_code" },
-          "description":   { "type": "rich_text","notion_key": "description" }
+          "location_name": {
+            "type": "title",
+            "notion_key": "location_name"
+          },
+          "location_type": {
+            "type": "select",
+            "notion_key": "location_type",
+            "options": [
+              "Interno",
+              "Esterno",
+              "Astratto",
+              "Ricorrente"
+            ]
+          },
+          "mood": {
+            "type": "select",
+            "notion_key": "mood",
+            "options": [
+              "Malinconia",
+              "Rabbia",
+              "Euforia",
+              "Terrore",
+              "Vuoto",
+              "Speranza",
+              "Ambiguo"
+            ]
+          },
+          "visual_code": {
+            "type": "rich_text",
+            "notion_key": "visual_code"
+          },
+          "description": {
+            "type": "rich_text",
+            "notion_key": "description"
+          }
         }
       },
-
       "objects": {
         "id": "315ddcfee7cd8073845fd786f702df30",
         "name": "Objects",
         "properties": {
-          "object_name":      { "type": "title",    "notion_key": "object_name" },
-          "object_type":      { "type": "select",   "notion_key": "object_type",
-                                "options": ["Fisico", "Simbolico", "Documento", "Arma", "Ricordo"] },
-          "current_state":    { "type": "select",   "notion_key": "current_state",
-                                "options": ["Integro", "Danneggiato", "Lost", "Destroyed", "Hidden", "Transferred"] },
-          "taboo_linked":     { "type": "checkbox", "notion_key": "taboo_linked" },
-          "taboo_description":{ "type": "rich_text","notion_key": "taboo_description" },
-          "symbolic_meaning": { "type": "rich_text","notion_key": "owner_history" },
-          "owner":            { "type": "relation", "notion_key": "owner", "relation_db": "characters" }
+          "object_name": {
+            "type": "title",
+            "notion_key": "object_name"
+          },
+          "object_type": {
+            "type": "select",
+            "notion_key": "object_type",
+            "options": [
+              "Fisico",
+              "Simbolico",
+              "Documento",
+              "Arma",
+              "Ricordo"
+            ]
+          },
+          "current_state": {
+            "type": "select",
+            "notion_key": "current_state",
+            "options": [
+              "Integro",
+              "Danneggiato",
+              "Lost",
+              "Destroyed",
+              "Hidden",
+              "Transferred"
+            ]
+          },
+          "taboo_linked": {
+            "type": "checkbox",
+            "notion_key": "taboo_linked"
+          },
+          "taboo_description": {
+            "type": "rich_text",
+            "notion_key": "taboo_description"
+          },
+          "symbolic_meaning": {
+            "type": "rich_text",
+            "notion_key": "owner_history"
+          },
+          "owner": {
+            "type": "relation",
+            "notion_key": "owner",
+            "relation_db": "characters"
+          }
         }
       }
-
     }
   },
-
   "supabase": {
     "table": "timeline_events",
     "column_mapping": {
-      "event_id":            { "source": "notion_page_id",           "type": "TEXT UNIQUE" },
-      "event_title":         { "source": "timeline.event_title",     "type": "TEXT" },
-      "arc":                 { "source": "timeline.arc",             "type": "TEXT" },
-      "emotional_tone":      { "source": "timeline.emotional_tone",  "type": "TEXT" },
-      "narrative_weight":    { "source": "timeline.narrative_weight","type": "INT" },
-      "event_type":          { "source": "timeline.event_type",      "type": "TEXT[]" },
-      "raw_text":            { "source": "timeline.raw_text",        "type": "TEXT" },
-      "knowledge_hint":      { "source": "timeline.knowledge_hint",  "type": "TEXT" },
-      "embedding":           { "source": "openai_embedding",         "type": "VECTOR(1536)", "model": "text-embedding-3-large" },
-      "status":              { "source": "timeline.status",          "type": "TEXT" },
-      "spoiler_lock":        { "source": "timeline.spoiler_lock",    "type": "BOOLEAN" },
-      "days_since_last_used":{ "source": "computed_by_n8n",          "type": "INT" },
-      "created_at":          { "source": "auto",                     "type": "TIMESTAMP DEFAULT NOW()" }
+      "event_id": {
+        "source": "notion_page_id",
+        "type": "TEXT UNIQUE"
+      },
+      "event_title": {
+        "source": "timeline.event_title",
+        "type": "TEXT"
+      },
+      "arc": {
+        "source": "timeline.arc",
+        "type": "TEXT"
+      },
+      "emotional_tone": {
+        "source": "timeline.emotional_tone",
+        "type": "TEXT"
+      },
+      "narrative_weight": {
+        "source": "timeline.narrative_weight",
+        "type": "INT"
+      },
+      "event_type": {
+        "source": "timeline.event_type",
+        "type": "TEXT[]"
+      },
+      "raw_text": {
+        "source": "timeline.raw_text",
+        "type": "TEXT"
+      },
+      "knowledge_hint": {
+        "source": "timeline.knowledge_hint",
+        "type": "TEXT"
+      },
+      "embedding": {
+        "source": "openai_embedding",
+        "type": "VECTOR(1536)",
+        "model": "text-embedding-3-large"
+      },
+      "status": {
+        "source": "timeline.status",
+        "type": "TEXT"
+      },
+      "spoiler_lock": {
+        "source": "timeline.spoiler_lock",
+        "type": "BOOLEAN"
+      },
+      "days_since_last_used": {
+        "source": "computed_by_n8n",
+        "type": "INT"
+      },
+      "created_at": {
+        "source": "auto",
+        "type": "TIMESTAMP DEFAULT NOW()"
+      }
     },
     "sync_trigger": {
       "notion_field": "embedding_sync",
@@ -134,15 +386,35 @@
       "set_after_sync": true
     }
   },
-
   "n8n": {
     "workflows": {
-      "sync_timeline":   { "name": "Sync Timeline to Supabase",       "trigger": "schedule", "cron": "0 6 * * *" },
-      "build_context":   { "name": "00 — Build Context Package",      "trigger": "called" },
-      "rag_query":       { "name": "Test RAG Query",                   "trigger": "called" },
-      "narrative_agent": { "name": "01 — Narrative Agent",             "trigger": "called" },
-      "main":            { "name": "MAIN — Deep Narrative OS",         "trigger": "schedule", "cron": "0 8 * * *" },
-      "schema_sync":     { "name": "Schema Sync — Notion to GitHub",   "trigger": "schedule", "cron": "0 3 * * *" }
+      "sync_timeline": {
+        "name": "Sync Timeline to Supabase",
+        "trigger": "schedule",
+        "cron": "0 6 * * *"
+      },
+      "build_context": {
+        "name": "00 — Build Context Package",
+        "trigger": "called"
+      },
+      "rag_query": {
+        "name": "Test RAG Query",
+        "trigger": "called"
+      },
+      "narrative_agent": {
+        "name": "01 — Narrative Agent",
+        "trigger": "called"
+      },
+      "main": {
+        "name": "MAIN — Deep Narrative OS",
+        "trigger": "schedule",
+        "cron": "0 8 * * *"
+      },
+      "schema_sync": {
+        "name": "Schema Sync — Notion to GitHub",
+        "trigger": "schedule",
+        "cron": "0 3 * * *"
+      }
     }
   }
 }
