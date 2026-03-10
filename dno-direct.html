@@ -693,7 +693,16 @@ async function sendMessage() {
     });
 
     const data = await res.json();
+    console.log('API response:', JSON.stringify(data));
     removeTyping();
+
+    if (data.error) {
+      addSystemMsg(`✗ API error: ${data.error.message || JSON.stringify(data.error)}`);
+      document.getElementById('header-sub').textContent = 'errore';
+      isLoading = false;
+      document.getElementById('send-btn').disabled = false;
+      return;
+    }
 
     const rawText = data.content?.[0]?.text || '(nessuna risposta)';
 
