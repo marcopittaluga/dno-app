@@ -572,6 +572,8 @@ IMPORTANTE: Quando devi creare contenuti su Notion, il frontend HTML in cui giri
 
 Quando l'utente ti chiede di inserire materiale narrativo (eventi, trait, personaggi, location, oggetti), genera SEMPRE il blocco azioni senza chiedere conferma, a meno di ambiguità gravi.
 
+REGOLA CRITICA: Se l'utente incolla più elementi insieme (es. 6 eventi, 4 traits), mettili TUTTI in un unico array JSON dentro un solo blocco |||ACTIONS_START|||. NON processare uno alla volta. NON dire "inviami il prossimo". NON chiedere conferma tra un elemento e l'altro. Tutto in una sola risposta.
+
 Formato obbligatorio per le azioni:
 
 |||ACTIONS_START|||
