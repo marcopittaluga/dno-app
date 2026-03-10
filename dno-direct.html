@@ -548,13 +548,21 @@ async function executeActions(actions) {
       }
       else if (action.type === 'create_object') {
         await createNotionPage(cfg.dbObjects, {
-          'object_name':   { title: rt(action.object_name) },
-          'object_type':   { select: { name: action.object_type || '' } },
-          'current_state': { select: { name: action.current_state || '' } },
-          'taboo_linked':  { checkbox: action.taboo_linked || false },
-          'owner_history': { rich_text: rt((action.symbolic_meaning || '') + '\n\n' + (action.visual_description || '')) },
+          'object_name': { title: rt(action.object_name) },
+          'object_type': { select: { name: action.object_type || '' } },
+          'Status':      { select: { name: action.status || 'Active' } },
+          'Notes':       { rich_text: rt([action.symbolic_meaning, action.visual_description].filter(Boolean).join('\n\n')) },
         });
         results.push({ ok: true, label: `oggetto "${action.object_name}"` });
+      }
+      else if (action.type === 'create_arc') {
+        await createNotionPage(cfg.dbArcs, {
+          'arc_name':          { title: rt(action.arc_name) },
+          'arc_status':        { select: { name: action.arc_status || 'Planned' } },
+          'dominant_emotion':  { select: { name: action.dominant_emotion || '' } },
+          'Visual palette':    { rich_text: rt(action.visual_palette || '') },
+        });
+        results.push({ ok: true, label: `arco "${action.arc_name}"` });
       }
     } catch(e) {
       results.push({ ok: false, label: action.type, error: e.message });
@@ -595,7 +603,7 @@ Tipi disponibili:
 - create_trait: trait_name, trait_type (Cognitive/Emotional/Relational/Behavioral), severity (Low/Medium/High), description
 - create_character: character_name, archetype, dominant_emotion, visual_description, voice_style, background
 - create_location: location_name, location_type, mood, visual_description, description
-- create_object: object_name, object_type, current_state, symbolic_meaning, visual_description, taboo_linked (bool)
+- create_object: object_name, object_type, status (Active/Inactive), symbolic_meaning, visual_description
 
 Puoi includere più azioni nello stesso array. Rispondi sempre in italiano. Sii conciso nella parte testuale.
 
