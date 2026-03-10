@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DNO Direct">
+<meta name="theme-color" content="#0a0a0f">
+<title>DNO Direct</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --surface3: #1e1e28;
+  --border: rgba(255,255,255,0.06);
+  --border-mid: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --text: #e8e8f0;
+  --text-secondary: rgba(232,232,240,0.50);
+  --text-tertiary: rgba(232,232,240,0.28);
+  --accent: #7b6cff;
+  --accent-dim: rgba(123,108,255,0.15);
+  --accent-glow: rgba(123,108,255,0.25);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', sans-serif; -webkit-font-smoothing:antialiased; }
+
+/* ── LOCK ── */
+#lock-screen {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  padding:40px 24px;
+}
+.lock-box {
+  display:flex; flex-direction:column; align-items:center; gap:24px;
+  width:100%; max-width:300px;
+}
+.lock-logo {
+  font-family:'DM Mono', monospace;
+  font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--text-tertiary);
+}
+.lock-logo span { color:var(--accent); }
+.lock-title {
+  font-size:28px; font-weight:600; letter-spacing:-0.5px;
+  text-align:center; line-height:1.2;
+}
+#lock-password {
+  width:100%; background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm); padding:14px 18px;
+  font-family:'DM Mono', monospace; font-size:15px; color:var(--text);
+  text-align:center; letter-spacing:0.1em; outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+#lock-password:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+#lock-password.err { border-color:var(--red); animation:shake 0.4s ease; }
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.lock-btn {
+  width:100%; padding:14px; background:var(--accent);
+  border:none; border-radius:var(--radius-sm);
+  font-family:'DM Sans', sans-serif; font-size:15px; font-weight:600;
+  color:#fff; cursor:pointer;
+  transition:opacity 0.15s, transform 0.1s, box-shadow 0.2s;
+  box-shadow:0 0 20px var(--accent-glow);
+}
+.lock-btn:active { opacity:0.8; transform:scale(0.98); }
+.lock-err { font-size:12px; color:var(--red); text-align:center; min-height:16px; }
+
+/* ── LAYOUT ── */
+#app {
+  display:none; flex-direction:column;
+  height:100dvh;
+  padding-top:var(--safe-top);
+  padding-bottom:var(--safe-bottom);
+}
+#app.visible { display:flex; }
+
+/* ── HEADER ── */
+.app-header {
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px 12px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.header-left { display:flex; flex-direction:column; gap:2px; }
+.header-title {
+  font-family:'DM Mono', monospace;
+  font-size:12px; letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--text-secondary);
+}
+.header-title span { color:var(--accent); }
+.header-sub { font-size:11px; color:var(--text-tertiary); }
+.header-right { display:flex; align-items:center; gap:8px; }
+.header-btn {
+  width:32px; height:32px; border-radius:50%;
+  background:var(--surface2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; transition:background 0.15s;
+  color:var(--text-secondary);
+}
+.header-btn:hover { background:var(--surface3); }
+
+/* ── CONFIG PANEL ── */
+.config-panel {
+  flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  overflow:hidden; max-height:0;
+  transition:max-height 0.3s ease;
+}
+.config-panel.open { max-height:300px; }
+.config-inner { padding:16px 20px; display:flex; flex-direction:column; gap:12px; }
+.config-label {
+  font-family:'DM Mono', monospace;
+  font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-tertiary); margin-bottom:4px;
+}
+.config-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.config-field { display:flex; flex-direction:column; gap:4px; }
+.config-field label { font-size:11px; color:var(--text-secondary); }
+.config-input {
+  background:var(--surface2); border:1px solid var(--border-mid);
+  border-radius:var(--radius-xs); padding:8px 10px;
+  font-family:'DM Mono', monospace; font-size:10px; color:var(--text);
+  width:100%; outline:none; transition:border-color 0.2s;
+}
+.config-input:focus { border-color:var(--accent); }
+.config-full { grid-column:1/-1; }
+
+/* ── MESSAGES ── */
+.messages {
+  flex:1; overflow-y:auto; padding:20px;
+  display:flex; flex-direction:column; gap:16px;
+  scroll-behavior:smooth;
+}
+.messages::-webkit-scrollbar { width:4px; }
+.messages::-webkit-scrollbar-track { background:transparent; }
+.messages::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:2px; }
+
+/* ── MESSAGE BUBBLES ── */
+.msg { display:flex; flex-direction:column; gap:4px; max-width:88%; }
+.msg.user { align-self:flex-end; align-items:flex-end; }
+.msg.assistant { align-self:flex-start; align-items:flex-start; }
+
+.msg-meta {
+  font-family:'DM Mono', monospace;
+  font-size:10px; color:var(--text-tertiary); letter-spacing:0.05em;
+  padding:0 4px;
+}
+
+.msg-bubble {
+  padding:12px 16px;
+  border-radius:var(--radius);
+  line-height:1.6; font-size:14px;
+  white-space:pre-wrap; word-break:break-word;
+}
+.msg.user .msg-bubble {
+  background:var(--accent-dim);
+  border:1px solid rgba(123,108,255,0.2);
+  border-bottom-right-radius:4px;
+  color:var(--text);
+}
+.msg.assistant .msg-bubble {
+  background:var(--surface2);
+  border:1px solid var(--border-mid);
+  border-bottom-left-radius:4px;
+  color:var(--text);
+}
+.msg.system .msg-bubble {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  font-family:'DM Mono', monospace;
+  font-size:11px; color:var(--text-tertiary);
+  align-self:center; text-align:center;
+  padding:8px 14px;
+}
+.msg.system { align-self:center; max-width:100%; }
+
+/* action tags inside assistant messages */
+.action-tag {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--green-dim); border:1px solid rgba(74,222,128,0.2);
+  border-radius:var(--radius-xs); padding:2px 8px;
+  font-family:'DM Mono', monospace; font-size:11px; color:var(--green);
+  margin:2px 0;
+}
+.action-tag.pending { background:var(--orange-dim); border-color:rgba(251,146,60,0.2); color:var(--orange); }
+.action-tag.error { background:var(--red-dim); border-color:rgba(248,113,113,0.2); color:var(--red); }
+
+/* typing indicator */
+.typing-indicator {
+  display:flex; gap:4px; align-items:center;
+  padding:14px 16px;
+  background:var(--surface2); border:1px solid var(--border-mid);
+  border-radius:var(--radius); border-bottom-left-radius:4px;
+  width:fit-content;
+}
+.typing-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--text-tertiary);
+  animation:typing 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay:0.2s; }
+.typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes typing { 0%,60%,100%{opacity:0.3;transform:scale(0.8)} 30%{opacity:1;transform:scale(1)} }
+
+/* ── INPUT AREA ── */
+.input-area {
+  flex-shrink:0;
+  padding:12px 16px 16px;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+}
+.input-row {
+  display:flex; align-items:flex-end; gap:10px;
+  background:var(--surface);
+  border:1px solid var(--border-mid);
+  border-radius:var(--radius);
+  padding:10px 12px 10px 16px;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.input-row:focus-within {
+  border-color:var(--border-strong);
+  box-shadow:0 0 0 3px rgba(123,108,255,0.08);
+}
+#chat-input {
+  flex:1; background:transparent; border:none; outline:none;
+  font-family:'DM Sans', sans-serif; font-size:14px; color:var(--text);
+  resize:none; max-height:160px; line-height:1.5;
+  min-height:24px;
+}
+#chat-input::placeholder { color:var(--text-tertiary); }
+#chat-input::-webkit-scrollbar { width:3px; }
+#chat-input::-webkit-scrollbar-thumb { background:var(--border-strong); }
+.send-btn {
+  width:34px; height:34px; flex-shrink:0;
+  background:var(--accent); border:none; border-radius:var(--radius-xs);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:opacity 0.15s, transform 0.1s;
+  color:#fff;
+}
+.send-btn:disabled { opacity:0.3; cursor:default; }
+.send-btn:not(:disabled):active { transform:scale(0.92); }
+.send-btn svg { width:16px; height:16px; }
+.input-hint {
+  font-size:11px; color:var(--text-tertiary); text-align:center;
+  margin-top:8px; font-family:'DM Mono', monospace;
+}
+
+/* ── WELCOME ── */
+.welcome {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:16px; padding:40px 24px; text-align:center;
+}
+.welcome-icon { font-size:40px; opacity:0.6; }
+.welcome-title { font-size:20px; font-weight:600; letter-spacing:-0.3px; }
+.welcome-sub { font-size:13px; color:var(--text-secondary); line-height:1.6; max-width:320px; }
+.welcome-chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:8px; }
+.chip {
+  background:var(--surface2); border:1px solid var(--border-mid);
+  border-radius:20px; padding:6px 14px;
+  font-size:12px; color:var(--text-secondary);
+  cursor:pointer; transition:all 0.15s;
+  font-family:'DM Mono', monospace;
+}
+.chip:hover { background:var(--surface3); border-color:var(--border-strong); color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-logo"><span>DNO</span> · Direct</div>
+    <div class="lock-title">Accesso riservato</div>
+    <input type="password" id="lock-password" placeholder="password" autocomplete="current-password">
+    <button class="lock-btn" onclick="unlock()">Entra</button>
+    <div class="lock-err" id="lock-err"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-left">
+      <div class="header-title"><span>DNO</span> · Direct</div>
+      <div class="header-sub" id="header-sub">pronto</div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" onclick="clearChat()" title="Nuova conversazione">↺</button>
+      <button class="header-btn" id="gear-btn" onclick="toggleConfig()" title="Configurazione">⚙</button>
+    </div>
+  </div>
+
+  <!-- Config -->
+  <div class="config-panel" id="config-panel">
+    <div class="config-inner">
+      <div class="config-label">Credenziali</div>
+      <div class="config-grid">
+        <div class="config-field config-full">
+          <label>Notion Token</label>
+          <input class="config-input" id="cfg-notion-token" placeholder="secret_..." type="password">
+        </div>
+        <div class="config-field">
+          <label>DB Characters</label>
+          <input class="config-input" id="cfg-db-characters" placeholder="id database">
+        </div>
+        <div class="config-field">
+          <label>DB Traits</label>
+          <input class="config-input" id="cfg-db-traits" placeholder="id database">
+        </div>
+        <div class="config-field">
+          <label>DB Arcs</label>
+          <input class="config-input" id="cfg-db-arcs" placeholder="id database">
+        </div>
+        <div class="config-field">
+          <label>DB Timeline</label>
+          <input class="config-input" id="cfg-db-timeline" placeholder="id database">
+        </div>
+        <div class="config-field">
+          <label>DB Locations</label>
+          <input class="config-input" id="cfg-db-locations" placeholder="id database">
+        </div>
+        <div class="config-field">
+          <label>DB Objects</label>
+          <input class="config-input" id="cfg-db-objects" placeholder="id database">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">⎋</div>
+      <div class="welcome-title">DNO Direct</div>
+      <div class="welcome-sub">Parla direttamente con Claude. Incolla materiale narrativo, dai istruzioni, scrivi su Notion senza passaggi intermedi.</div>
+      <div class="welcome-chips">
+        <div class="chip" onclick="useChip(this)">inserisci evento</div>
+        <div class="chip" onclick="useChip(this)">inserisci trait</div>
+        <div class="chip" onclick="useChip(this)">inserisci personaggio</div>
+        <div class="chip" onclick="useChip(this)">inserisci location</div>
+        <div class="chip" onclick="useChip(this)">inserisci oggetto</div>
+        <div class="chip" onclick="useChip(this)">cosa c'è in Notion?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <div class="input-row">
+      <textarea id="chat-input" placeholder="Scrivi o incolla materiale narrativo…" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="input-hint">⌘↵ invia · ↺ nuova chat · ⚙ configura</div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let sessionPassword = null;
+let conversationHistory = [];
+let isLoading = false;
+const LOCK_PASSWORD = 'deva2025';
+
+// ── LOCK ──
+function unlock() {
+  const val = document.getElementById('lock-password').value;
+  const err = document.getElementById('lock-err');
+  if (val === LOCK_PASSWORD) {
+    sessionPassword = val;
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    loadConfig();
+    document.getElementById('chat-input').focus();
+  } else {
+    err.textContent = 'Password errata';
+    document.getElementById('lock-password').classList.add('err');
+    setTimeout(() => document.getElementById('lock-password').classList.remove('err'), 500);
+  }
+}
+document.getElementById('lock-password').addEventListener('keydown', e => { if(e.key==='Enter') unlock(); });
+
+// ── CONFIG ──
+function toggleConfig() {
+  const p = document.getElementById('config-panel');
+  p.classList.toggle('open');
+}
+function loadConfig() {
+  const keys = ['cfg-notion-token','cfg-db-characters','cfg-db-traits','cfg-db-arcs','cfg-db-timeline','cfg-db-locations','cfg-db-objects'];
+  keys.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) document.getElementById(k).value = v;
+  });
+}
+function saveConfig() {
+  const keys = ['cfg-notion-token','cfg-db-characters','cfg-db-traits','cfg-db-arcs','cfg-db-timeline','cfg-db-locations','cfg-db-objects'];
+  keys.forEach(k => localStorage.setItem(k, document.getElementById(k).value));
+}
+document.querySelectorAll('.config-input').forEach(el => el.addEventListener('change', saveConfig));
+
+function getConfig() {
+  return {
+    notionToken: document.getElementById('cfg-notion-token').value.trim(),
+    dbCharacters: document.getElementById('cfg-db-characters').value.trim(),
+    dbTraits: document.getElementById('cfg-db-traits').value.trim(),
+    dbArcs: document.getElementById('cfg-db-arcs').value.trim(),
+    dbTimeline: document.getElementById('cfg-db-timeline').value.trim(),
+    dbLocations: document.getElementById('cfg-db-locations').value.trim(),
+    dbObjects: document.getElementById('cfg-db-objects').value.trim(),
+  };
+}
+
+// ── NOTION HELPERS ──
+async function notionRequest(method, path, body) {
+  const cfg = getConfig();
+  if (!cfg.notionToken) throw new Error('Notion token mancante — apri ⚙ e configuralo');
+  const res = await fetch(`https://api.notion.com/v1${path}`, {
+    method,
+    headers: {
+      'Authorization': `Bearer ${cfg.notionToken}`,
+      'Notion-Version': '2022-06-28',
+      'Content-Type': 'application/json'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `Notion error ${res.status}`);
+  }
+  return res.json();
+}
+
+function rt(text) {
+  return [{ type:'text', text:{ content: text || '', link:null } }];
+}
+
+async function createNotionPage(dbId, properties, children) {
+  if (!dbId) throw new Error('ID database mancante — configura in ⚙');
+  return notionRequest('POST', '/pages', {
+    parent: { database_id: dbId },
+    properties,
+    ...(children ? { children } : {})
+  });
+}
+
+// ── NOTION ACTIONS ──
+// Called by Claude via tool-like JSON in its response
+async function executeActions(actions) {
+  const cfg = getConfig();
+  const results = [];
+  for (const action of actions) {
+    try {
+      if (action.type === 'create_event') {
+        await createNotionPage(cfg.dbTimeline, {
+          'event_title':      { title: rt(action.event_title) },
+          'event_type':       { select: { name: action.event_type || 'Action' } },
+          'emotional_tone':   { select: { name: action.emotional_tone || '' } },
+          'narrative_weight': { number: action.narrative_weight || 5 },
+          'status':           { select: { name: 'planned' } },
+          'embedding_sync':   { checkbox: false },
+          'spoiler_lock':     { checkbox: false },
+          'Text':             { rich_text: rt(action.raw_text || '') },
+          ...(action.knowledge_hint ? { 'knowledge_hint': { rich_text: rt(action.knowledge_hint) } } : {})
+        });
+        results.push({ ok: true, label: `evento "${action.event_title}"` });
+      }
+      else if (action.type === 'create_trait') {
+        await createNotionPage(cfg.dbTraits, {
+          'trait_name': { title: rt(action.trait_name) },
+          'trait_type': { select: { name: action.trait_type || 'Cognitive' } },
+          'severity':   { select: { name: action.severity || 'Medium' } },
+          'description':{ rich_text: rt(action.description || '') },
+        });
+        results.push({ ok: true, label: `trait "${action.trait_name}"` });
+      }
+      else if (action.type === 'create_character') {
+        const page = await createNotionPage(cfg.dbCharacters, {
+          'character_name':    { title: rt(action.character_name) },
+          'archetype':         { select: { name: action.archetype || '' } },
+          'dominant_emotion':  { select: { name: action.dominant_emotion || '' } },
+          'status':            { select: { name: 'Active' } },
+          'visual description':{ rich_text: rt(action.visual_description || '') },
+          'voice_style':       { rich_text: rt(action.voice_style || '') },
+        }, action.background ? [{ object:'block', type:'paragraph', paragraph:{ rich_text: rt(action.background) } }] : undefined);
+        results.push({ ok: true, label: `personaggio "${action.character_name}"`, id: page.id });
+      }
+      else if (action.type === 'create_location') {
+        await createNotionPage(cfg.dbLocations, {
+          'location_name': { title: rt(action.location_name) },
+          'location_type': { select: { name: action.location_type || '' } },
+          'mood':          { select: { name: action.mood || '' } },
+          'visual_code':   { rich_text: rt(action.visual_description || '') },
+          'description':   { rich_text: rt(action.description || '') },
+        });
+        results.push({ ok: true, label: `location "${action.location_name}"` });
+      }
+      else if (action.type === 'create_object') {
+        await createNotionPage(cfg.dbObjects, {
+          'object_name':   { title: rt(action.object_name) },
+          'object_type':   { select: { name: action.object_type || '' } },
+          'current_state': { select: { name: action.current_state || '' } },
+          'taboo_linked':  { checkbox: action.taboo_linked || false },
+          'owner_history': { rich_text: rt((action.symbolic_meaning || '') + '\n\n' + (action.visual_description || '')) },
+        });
+        results.push({ ok: true, label: `oggetto "${action.object_name}"` });
+      }
+    } catch(e) {
+      results.push({ ok: false, label: action.type, error: e.message });
+    }
+  }
+  return results;
+}
+
+// ── SYSTEM PROMPT ──
+function buildSystemPrompt() {
+  const cfg = getConfig();
+  return `Sei l'assistente interno del Deep Narrative OS (DNO), un sistema di gestione narrativa per il virtual influencer Deva Luce.
+
+Il tuo compito è aiutare Marco a gestire il suo database narrativo. Puoi:
+1. Rispondere a domande sul progetto
+2. Analizzare materiale narrativo incollato
+3. Scrivere direttamente su Notion eseguendo azioni strutturate
+
+Quando devi scrivere su Notion, includi nella tua risposta un blocco JSON racchiuso tra |||ACTIONS_START||| e |||ACTIONS_END||| con un array di azioni. Esempio:
+
+|||ACTIONS_START|||
+[
+  {
+    "type": "create_event",
+    "event_title": "Titolo evento",
+    "event_type": "Knowledge",
+    "emotional_tone": "Hope",
+    "narrative_weight": 7,
+    "raw_text": "Testo descrittivo dell'evento...",
+    "knowledge_hint": "Sintesi concettuale opzionale"
+  }
+]
+|||ACTIONS_END|||
+
+Tipi di azione disponibili:
+- create_event: event_title, event_type (Action/Emotional/Knowledge), emotional_tone, narrative_weight (1-10), raw_text, knowledge_hint (opzionale)
+- create_trait: trait_name, trait_type (Cognitive/Emotional/Relational/Behavioral), severity (Low/Medium/High), description
+- create_character: character_name, archetype, dominant_emotion, visual_description, voice_style, background
+- create_location: location_name, location_type, mood, visual_description, description
+- create_object: object_name, object_type, current_state, symbolic_meaning, visual_description, taboo_linked (bool)
+
+Quando l'utente incolla materiale narrativo (lista di eventi, traits, personaggi), analizzalo e scrivi direttamente su Notion senza chiedere conferma, a meno che ci siano ambiguità gravi.
+
+Rispondi sempre in italiano. Sii conciso nella parte testuale — le azioni parlano da sole.
+
+Database IDs configurati: Timeline=${cfg.dbTimeline||'non configurato'}, Characters=${cfg.dbCharacters||'non configurato'}, Traits=${cfg.dbTraits||'non configurato'}, Arcs=${cfg.dbArcs||'non configurato'}, Locations=${cfg.dbLocations||'non configurato'}, Objects=${cfg.dbObjects||'non configurato'}`;
+}
+
+// ── CHAT ──
+function addMessage(role, content, meta) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  if (meta) {
+    const m = document.createElement('div');
+    m.className = 'msg-meta';
+    m.textContent = meta;
+    div.appendChild(m);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = content;
+  div.appendChild(bubble);
+
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return bubble;
+}
+
+function addSystemMsg(text) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg system';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.id = 'typing-msg';
+  const ind = document.createElement('div');
+  ind.className = 'typing-indicator';
+  ind.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  div.appendChild(ind);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-msg');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  autoResize(input);
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('header-sub').textContent = 'elaborazione…';
+
+  const typing = addTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystemPrompt(),
+        messages: conversationHistory
+      })
+    });
+
+    const data = await res.json();
+    removeTyping();
+
+    const rawText = data.content?.[0]?.text || '(nessuna risposta)';
+
+    // Parse actions
+    const actionsMatch = rawText.match(/\|\|\|ACTIONS_START\|\|\|([\s\S]*?)\|\|\|ACTIONS_END\|\|\|/);
+    const displayText = rawText.replace(/\|\|\|ACTIONS_START\|\|\|[\s\S]*?\|\|\|ACTIONS_END\|\|\|/g, '').trim();
+
+    conversationHistory.push({ role: 'assistant', content: rawText });
+    addMessage('assistant', displayText || '↓ esecuzione azioni…');
+
+    if (actionsMatch) {
+      try {
+        const actions = JSON.parse(actionsMatch[1].trim());
+        document.getElementById('header-sub').textContent = `scrittura ${actions.length} elementi…`;
+
+        const results = await executeActions(actions);
+        results.forEach(r => {
+          addSystemMsg(r.ok ? `✓ ${r.label}` : `✗ ${r.label}: ${r.error}`);
+        });
+
+        const ok = results.filter(r => r.ok).length;
+        const fail = results.filter(r => !r.ok).length;
+        document.getElementById('header-sub').textContent = fail ? `${ok} ok · ${fail} errori` : `${ok} elementi scritti`;
+      } catch(e) {
+        addSystemMsg(`✗ Errore parsing azioni: ${e.message}`);
+        document.getElementById('header-sub').textContent = 'errore';
+      }
+    } else {
+      document.getElementById('header-sub').textContent = 'pronto';
+    }
+
+  } catch(e) {
+    removeTyping();
+    addSystemMsg(`✗ Errore API: ${e.message}`);
+    document.getElementById('header-sub').textContent = 'errore';
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+function clearChat() {
+  conversationHistory = [];
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">⎋</div>
+      <div class="welcome-title">DNO Direct</div>
+      <div class="welcome-sub">Parla direttamente con Claude. Incolla materiale narrativo, dai istruzioni, scrivi su Notion senza passaggi intermedi.</div>
+      <div class="welcome-chips">
+        <div class="chip" onclick="useChip(this)">inserisci evento</div>
+        <div class="chip" onclick="useChip(this)">inserisci trait</div>
+        <div class="chip" onclick="useChip(this)">inserisci personaggio</div>
+        <div class="chip" onclick="useChip(this)">inserisci location</div>
+        <div class="chip" onclick="useChip(this)">inserisci oggetto</div>
+        <div class="chip" onclick="useChip(this)">cosa c'è in Notion?</div>
+      </div>
+    </div>`;
+  document.getElementById('header-sub').textContent = 'pronto';
+}
+
+function useChip(el) {
+  document.getElementById('chat-input').value = el.textContent;
+  document.getElementById('chat-input').focus();
+  autoResize(document.getElementById('chat-input'));
+}
+
+function handleKey(e) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+</script>
+</body>
+</html>
