@@ -347,6 +347,17 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
           <input class="config-input" id="cfg-db-objects" placeholder="id database">
         </div>
       </div>
+      <div class="config-label" style="margin-top:8px">Sicurezza</div>
+      <div class="config-grid">
+        <div class="config-field">
+          <label>Nuova password</label>
+          <input class="config-input" id="cfg-new-password" placeholder="nuova password" type="password">
+        </div>
+        <div class="config-field" style="justify-content:flex-end; padding-top:16px;">
+          <button onclick="changePassword()" style="background:var(--accent);border:none;border-radius:var(--radius-xs);padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#fff;cursor:pointer;width:100%;">Salva password</button>
+        </div>
+      </div>
+      <div id="pwd-feedback" style="font-size:11px;color:var(--green);min-height:14px;font-family:'DM Mono',monospace;margin-top:4px;"></div>
     </div>
   </div>
 
@@ -391,10 +402,13 @@ let isLoading = false;
 const LOCK_PASSWORD = 'deva2025';
 
 // ── LOCK ──
+function getPassword() {
+  return localStorage.getItem('dno-password') || LOCK_PASSWORD;
+}
 function unlock() {
   const val = document.getElementById('lock-password').value;
   const err = document.getElementById('lock-err');
-  if (val === LOCK_PASSWORD) {
+  if (val === getPassword()) {
     sessionPassword = val;
     document.getElementById('lock-screen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
@@ -423,6 +437,22 @@ function loadConfig() {
 function saveConfig() {
   const keys = ['cfg-notion-token','cfg-db-characters','cfg-db-traits','cfg-db-arcs','cfg-db-timeline','cfg-db-locations','cfg-db-objects'];
   keys.forEach(k => localStorage.setItem(k, document.getElementById(k).value));
+}
+
+function changePassword() {
+  const newPwd = document.getElementById('cfg-new-password').value.trim();
+  const feedback = document.getElementById('pwd-feedback');
+  if (!newPwd || newPwd.length < 4) {
+    feedback.style.color = 'var(--red)';
+    feedback.textContent = 'minimo 4 caratteri';
+    return;
+  }
+  localStorage.setItem('dno-password', newPwd);
+  sessionPassword = newPwd;
+  document.getElementById('cfg-new-password').value = '';
+  feedback.style.color = 'var(--green)';
+  feedback.textContent = '✓ password aggiornata';
+  setTimeout(() => feedback.textContent = '', 3000);
 }
 document.querySelectorAll('.config-input').forEach(el => el.addEventListener('change', saveConfig));
 
