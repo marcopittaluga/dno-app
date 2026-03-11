@@ -604,10 +604,13 @@ Tipi disponibili:
 - create_character: character_name, archetype, dominant_emotion, visual_description, voice_style, background
 - create_location: location_name, location_type, mood, visual_description, description
 - create_object: object_name, object_type, status (Active/Inactive), symbolic_meaning, visual_description
+- create_arc: arc_name, arc_status (Planned/Active/Closed), dominant_emotion, visual_palette
+
+IMPORTANTE: Gli archi narrativi vanno SEMPRE creati con create_arc, mai come eventi o location.
 
 Puoi includere più azioni nello stesso array. Rispondi sempre in italiano. Sii conciso nella parte testuale.
 
-Database configurati: Timeline=${cfg.dbTimeline||'mancante'}, Characters=${cfg.dbCharacters||'mancante'}, Traits=${cfg.dbTraits||'mancante'}, Locations=${cfg.dbLocations||'mancante'}, Objects=${cfg.dbObjects||'mancante'}`;
+Database configurati: Timeline=${cfg.dbTimeline||'mancante'}, Characters=${cfg.dbCharacters||'mancante'}, Traits=${cfg.dbTraits||'mancante'}, Arcs=${cfg.dbArcs||'mancante'}, Locations=${cfg.dbLocations||'mancante'}, Objects=${cfg.dbObjects||'mancante'}`;
 }
 
 // ── CHAT ──
